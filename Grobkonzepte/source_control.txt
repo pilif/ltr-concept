@@ -1,0 +1,87 @@
+$Id: source_control.txt,v 1.1 2000-11-07 12:32:48 pilif Exp $
+Source control 1.0
+------------------
+
+1) Problemstellung
+Die linktrail-Applikation und damit verbundene Konzepte haben einen
+gewissen Umfang erreicht, dessen Administration sich als immer
+schwieriger erweisen hat. Auch im Hinblick auf Teamarbeit und
+Datensicherheit, muss eine einfache, Leistungsfähige und sichere Mehtode
+gefunden werden, Quelltexte zu sichern.
+
+2) gängige Ansätze
+Mehtoden zur Sourcecode-Verwaltung sind einige verbreitet. Linktrail hat
+bislang die "im zweifelsfalle: schreie"-Methode mit der "sch** da muss
+ein Backup her... haben wir das?"-Methode kombiniert und erfolgreich
+angewendet. Als andere Lösungen bieten sich versionskontroll-Software
+an. Verbreitet sind hier Microsofts Visual SourceSave und CVS. Linktrail
+verwendet wegen der angeborenen Unix-Lastigkeit und wegen des Preises
+letzeres.
+
+3) Umsetzung
+ 3.1) Repository
+Das CVS-Repository befindet sich auf troll.linktrail.work in
+/usr/local/repos. Zugang haben 3 User: pilif, fabian und linktrai; 
+alle 3 haben Write-Access. Lese-Zugang ist nicht vorhanden. Im 
+Repository befinden sich zwei Projekte, wobei die Erstellung eines
+dritten fest eingeplant ist: ltrkonzept für die technischen
+Konzeptschriften und prototyp für die linktrail applikation.
+
+Später wird noch der Search-Server in das System eingegliedert.
+
+ 3.2) Arbeitskopien
+Die Arbeitskopien sind in diesem Fall die grösste Herausforderung, da
+zur korrekten Überprüfung der Änderungen ein Web-Server erforderlich
+ist, da die Clients alle unter Windows laufen und da die Daten redundant
+an verschiedenen Stellen gehalten werden müssen. Folgendes Schema wurde
+verwendet:
+
+  3.2.1) Konzepte
+Eine aktuelle Arbeitskopie der technischen Konzepte befindet sich auf
+g:\Service Developement\konzepte, damit zum einen die aktuelle Version
+dem Backup unterstellt ist, aber auch damit sie jederzeit eingesehen
+werden können.
+
+Wer eine Arbeitskopie ausserhalb dieses Verzeichnisses erstellt, ist für
+ein Update im Verzeichnis selbst verantwortlich.
+
+  3.2.2) Applikation
+Eine CVS-Arbeitskopie ist fest an ihren Benutzer gebunden (und
+umgekehrt). Damit ein brauchbares Log erstellt werden kann, müssen also
+alle Benutzer mit einer separaten Arbeitskopie arbeiten. Jede
+Arbeitskopie benötigt aber zwingend einen Webserver zur Anzeige.
+Gleichzeitig waren die Pfade zu Dateien innerhalb der Applikation hart
+einprogrammiert, so dass sich die Applikation fest in einem bestimmten
+Verzeichnis befinden musste (also auch die Arbeitskopie, was damit zur
+Kostellation "eine Kopie pro Rechner" geführt hat.
+
+Die Applikation wurde so modifiziert, dass sie ihr Arbeitsverzeichnis
+selbst erkennt und alle Pfrade relativ zu diesem berechnet. Im
+DNS-Server wurde eine Subdomain dev.linktrail.work. eingerichtet. In
+dieser befinden sich Aliase auf den Entwicklungsrechner in der Form
+<<entwickler>>.dev.linktrail.work. Alle diese Aliase sind in der
+Serverkonfiguration auf eigene Verzeichnisse gemappt, so dass jede
+Arbeitskopie jedes Entwicklers unter obiger Adresse zu erreichen ist.
+
+Die Home-Verzeichnisse der Benutzer werden per SMB exportiert, so dass
+ein Zugang von Windows aus möglich ist.
+
+4) Backup
+Das Repository wird einmal täglich auf Band gesichert.
+
+5) Betrachtung
+Die Einführung eines Versionskontrollsystemes ist der erste Schritt in
+Richtung mehr Datensicherheit und vor allem auch Teamarbeit. Jeder
+Mitarbeiter von linktrail kann über http://cvsweb.linktrail.work direkt
+den Entwicklungsfortschritt betrachten, so dass insgesamt die
+Transparenz erhöht wurde.
+
+Insgesamt hat sich damit der Konfigurationsaufwand gelohnt.
+
+
+philip.hofstetter@linktrail.com
+07.11.2000
+
+-- 
+$Author: pilif $
+$Date: 2000-11-07 12:32:48 $
