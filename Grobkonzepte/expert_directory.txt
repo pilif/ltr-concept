@@ -1,0 +1,67 @@
+Expert Directory 1.0
+--------------------
+
+1) Problemstellung
+Linktrails Kernphilosophie ist "find an expert behind every link". Die
+Experten, also die Nutzer des Systems spielen Damit eine wichtige Rolle
+in der ganzen Applikation. Bislang bieten sich 3 Wege an, einen Nutzer
+im System zu finden:
+
+ *) Ein Benutzer wird über einen Trail, den er gemacht hat gefunden.
+    Dies wird ermöglicht durch grosszügig platzierte Links auf seine
+    Mypage (neben dem Trail im Directory, in einem Link eines Trails, im
+    Header eines Trails)
+ *) Ein Benutzer ist Top/Featured Experte im System[1]. Damit wird er
+    prominent am rechten Rand einer Seite im Directory dargestellt.
+ *) Der Search erlaubt es, nach Experten zu suchen, nachdem das
+    Drop-Down-Menü im Header jeder Seite von Linktrail auf den
+    entsprechenden Menüpunkt umgestellt wurde. Die Personensuche sucht
+    im Benutzernamen, im Vornamen und im Nachnamen.
+
+Nun soll eine weitere Möglichkeit geschaffen werden, Benutzer zu finden:
+Über eine Directory-Seite, die in das aktuelle Directory eingebaut ist. 
+ 
+2) Angebot für den Endnutzer
+Der Benutzer bekommt in diesem "virtuellen" Directory-Node folgende
+Ansichten des Benutzerpools zu sehen:
+
+ *) Alphabethisch: Eine Alphabehtische Liste der Experten des Systems.
+    Über Links von A-Z können die einzelnen Buchstaben ausgewählt
+    werden. Diese Funktion ist gedacht für Benutzer, die sich einen
+    Überblick über registrierte Benutzer verschaffen wollen
+ *) TopExperten: Jede Haupt-Kategorie des Systems (Level = 1) wird
+    zusammen mit ihren TopExperten nochmals aufgeliestet
+ *) Search: Im Expert-Directory ist es nicht notwendig, das Suchfeld auf
+    die Expertensuche umzustellen. Diese Option ist vorausgewählt
+
+Wird ein ungültiger Benutzername in der Url-Zeile des Browsers
+eingegeben, wird der Nutzer momentan auf die Startseite des Systems
+gebracht. In Zukunkft wird diese Redirection auf dieses virtuelle
+Verzeichnis "umgebogen".
+
+    
+3) Nachteile
+Diese Funktion ist vor allem in der Anfangsphase mit einem grossen
+Problem verbunden: Sie erlaubt es externen Parteien, die Benutzerzahl
+des linktrail-Systems in Erfahrung zu bringen. Auch wenn man Tricks wie
+"kleine Anzahl an Benutzern pro Seite" verwendet: Will jemand wirklich
+an Benutzerzahlen gelangen, so ist für ihn kein Hindernis zu gross, wenn
+eine Möglichkeit besteht.
+
+Es stellt sich daher die Frage, ob die Schaffung eines
+Experten-Directories für den Benutzer so viele Vorteile bringt, dass sie
+den einen grossen unternehmenspolitischen Nachteil aufwiegen können.
+
+
+4) Aufwand/Verantwortung
+
+  Templates:          Fabian/Philip: 5 Stunden
+  Programmierkonzept: Philip: 5 Stunden
+  Implementierung:    Konzeptabhängig. Eher unter 8 Stunden.
+  
+
+philip.hofstetter@linktrail.com
+16.10.00
+
+ -- 
+ [1] ltrTopExperts.txt   

@@ -1,0 +1,193 @@
+ltrLanguages 1.0
+----------------
+
+I) Disclaimer
+Dieses Dokument stellt kein fertiges Konzept dar. Es soll als
+Grundlage für Diskussionen dienen und gleichzeitg den technischen
+Aufwand für einzelne Realisierungen klar aufzeigen. Dabei wird im
+folgenden NICHT von der Übersetzung der GUI ausgegangen, da die
+keinerlei technische Probleme oder Ansprüche erhebt. Die Linktrail
+Applikation ist durch pures übersetzen von Texten in exernen Dateien
+komplett in eine andere Sprache zu übersetzen. Es muss kein Code
+angepasst werden. Damit stellt sich nur die Frage nach dem Umbau/Ausbau
+der Datenbank.
+
+
+1) Problemstellung
+Linktrail soll für den Launch in zwei (oder mehr; auf jeden Fall aber
+ausbaubar) Sprachen vorbereitet werden. Dazu gehört die Übersetzung des 
+GUI (nicht Teil des Dokuments) und die Anpassung der Directory-Datenbank
+auf mehr als eine Sprache. Ziel ist es, eine befriedigende Lösung zu
+finden, die mehrsprachige Trails so weit als möglich unterbindet, auf
+spezielle Sitten von Ländern/Sprachräumen eingeht und schlussendlich
+genügend Flexibilität bietet, auf bleibig (so viele wie möglich)
+Sprachen ausgebaut zu werden. Hier soll im einzelnen auf die Punkte
+eingegangen werden:
+
+ 1.1) Mehrsprachige Trails
+Sind alle Trails des Systemes für alle Benutzer zu sehen, so entstehen
+grundsätzlich 2 Probleme: 
+
+  *) Ein Benutzer, der nur einer Sprache (in der ersten Phase z.B. des
+     Deutschen) mächtig ist, wird plötzlich fremdsprachige Trails sehen.
+  *) In einem einzigen Trail kann eine Mischung von verschiedenen
+     Sprache entstehen.
+     
+Beide Probleme sund Usability-technisch inakzeptabel.
+
+ 1.2) Andere Länder, andere Sitten
+Eine 1:1-Übersetzung des Directories kann nicht auf bestimmte Ansichten
+und Sitten von unterschiedlichen Sprachräumen eingehen (wobei
+stellenweise die Sitten sich sogar in ein- und demselben Sprachraum
+ändern, was aber in der ersten Phase nicht beachtet werden soll):
+Betrachtet man andere grosse Directories im Web, so sieht man eine
+vollkommen andere Prioritisierung. "Autos" ist bei Yahoo.de z.B eine
+Top-Level-Kategorie und zuoberst links. Bei Yahoo.com ist es weniger
+wichtig aufgehängt (dafür ist dort Commerce wichtiger) [diese Angaben
+basieren auf Statistiken, die letzten Mai erhoben wurden und sind damit
+nicht mehr garantiert aktuell. Es soll auch nur eine Tendenz angezeigt
+werden. Ein interesierter Leser soll sich selbst vergewissern]. linktrail
+muss sich dieses Problems annehmen.
+
+ 1.3) Flexibilität
+Momentan wird linktrail auf Deutsch übersetzt, damit es im dt. und en.
+Sprachraum gleichzeitig starten kann. Laut Businessplan ist aber eine
+Erweiterung geplant, so dass die Implementierung offen genug sein muss,
+um mit mehr Sprachen umzugehen.
+
+2) Diskussion der Probleme
+Die Probleme aus Abschnitt 1 sollen nun diskutiert werden, damit sich
+eine optimale Lösung abzeichnen kann, die dann im nächsten Abschnitt auf
+technische Implementierbarkeit überprüft werden soll
+
+ 2.1) Mehrsprachige Trails
+Dieses Problem kann umgangen/abgeschwächt werden, je weiter die beiden
+Sprachversionen (logisch) von einander entfernt sind. Die Lösung von
+yahoo bietet sich an: In deutschen Kateogrien befinden sich nur
+deutsche Trails, während sich in englischen Kategorien auch nur
+englische Trails befinden.
+
+Ein Link kann, soweit vorhanden, auf die jeweilige Kategorie im
+internationalen Verzeichnis (englische Version) verweisen. 
+
+Mit ein paar technischen Spielereien ist es möglich, in Erfahrung zu
+bringen, ob der Benutzer gerade daran ist, zu versuchen einen "falsch
+sprechenden" Trail zu erstellen (siehe dazu 3)
+
+ 2.2) Andere Länder, andere Sitten
+Befinden sich im System mehrere (logisch; siehe dazu 3) getrennte
+Directories, so können für unterschiedliche Sprachen (ja sogar Regionen)
+unterschiedliche Strukturen erstellt werden. Damit sind die Probleme von
+1.2 gelöst, da damit auf verschiedene Sitten eingegangen werden kann.
+
+ 2.3) Flexibilität
+Dies ist ein rein programmiertechnischer Grundsatz und kann soweit als
+selbstverständlich und gelöst angesehen werden; es ist die heilige
+Pflicht eines Programmierers, flexibel zu programmieren.
+
+ 2.4) Betrachtung
+Aus der Problemstellung mit ihren konzeptionellen Lösungen ergibt sich
+dabei ganz klar, dass die Directories getrennt werden müssen, damit
+etliche Probleme nicht auftreten oder zumindest abgeschwächt werden.
+
+Die andere Frage, die sich stellt, ist, ob die Datenbanken vollständig
+getrennt werden sollen. Ein deutscher Experte ist damit immer nur ein
+deutscher Experte (und sieht die GUI nur englisch, um eventuellen
+Missverständnissen vorzubeugen), oder, ob nur das Directory getrennt
+werden soll. Ein deutscher Experte kann sich damit auch im englischen
+Directory einloggen und Trails erstellen. Auf der Mypage könnte die
+Sprache der jeweiligen Trails gekennzeichnet werden.
+
+Dies scheint aufgrund der Ausrichtung von linktrail (Nischenmarkt;
+hauptsächlich englischsprachig) sinnvoller.
+
+Damit lässt sich das Konzept auf folgende Schritte reduzieren:
+
+  *) Das Directory wird getrennt. Im deutschen Directory werden nur
+     deutsche Trails gemacht, im englischen nur englische (u.s.w)
+     [Mischtrails könnten mit noch mehr Trickserei auf technischer Ebene
+     auch realisiert und entsprechend angezeigt werden. Siehe dazu 3]
+  *) Experten sind über das ganze System gültig. Auf der Mypage ist
+     neben jedem Trail (erstellt oder subscribed) eine Kennzeichnung zu
+     sehen (Flagge?), die die Sprache des Trails aufzeigt.
+
+3) Technische Realisierung 
+Da die Directories getrennt werden müssen; die Experten aber die
+gleichen sind, stellt sich die frage der technischen Trennung:
+Aufsplittung der Directory-Tabelle ltrDirectory (ltrDirectoryData) ist
+keine Alternative: In ersterer Tabelle wird jedem Directory-Punkt eine
+eindeutige Node_ID verpasst, anhand derer die Subscriptions realisiert
+werden. Es wäre nicht mehr möglich, zu unterscheiden, ob ein Nutzer nun
+den Trail aus der englischen ltrDirectory subscribed hat, oder den aus
+der deutschen.
+
+Aufsplittung in verscheidene Datenbanken ist auch nicht möglich, da ein
+JOIN nicht über mehrere Datenbanken laufen kann (in MySQL geht das zwar;
+es ist aber langsam und alles andere, als portabel).
+
+Die Propagierte Lösung läuft auf eine bloss logische Trennung des
+Directories hinaus: Alle Sprachen befinden sich in einer Tabelle, sind
+aber logisch von einander getrennt. Als Beispiel hier die Darstellung
+von "Computers_and_Internet" und "Computer_und Internet" in
+ltrDirectory (auf das wesentliche gekürzt):
+
+Node_ID | Name                     | Lang | Int |
+  2       /Computers_and_Internet/    1     NULL
+  3	  /Computer_und_Internet/     2      1
+
+Lang ist ein bitflag und erlaubt damit bis zu 32 Sprachen, ja sogar
+einen mehrsprachigen Trail:
+
+Node_ID | Name                     | Lang | Int |
+  4       /Test                       3     NULL
+
+Dieser Trail ist damit sowohl englisch, als auch deutsch
+(Bit-Arithmetik. Soll ein anderes Mal erklährt werden).
+
+Das Feld Int dient zur Verlinkung auf die jeweilige Kategorie im
+Internationalen Verzeichnis. NULL heisst "ist bereits international",
+oder aber "hat keine Entsprechung".
+
+Kommt der letzte Punkt: Wie können mehrsprachige Trails erkannt werden
+und wie kann verhindert werden, dass ein komplett deutscher Trail im
+englischen Directory entsteht?
+
+Dabei findet eine Idee Verwendung, die vor etwa 2 Monaten aufgetaucht
+ist: Spell-Checking. Angenommen, ein Benutzer erstellt im Englischen
+directory einen Trail. Es wird geprüft, welcher Spell-Checker besser
+abschneidet: Der deutsche, oder der englische. Ist es der deutsche, kommt
+für den Benutzer eine Meldung, die diesen Verdacht zum Ausdruck bringt
+und den Benutzer höflich bittet, die Verwendete Sprache nochmals zu
+prüfen, resp. den Trail an einem anderen Ort zu machen (direkter Link).
+
+Wird in einem englischen Trail ein deutscher Link gepostet, wird gleich
+vorgegangen, der Benutzer darf aber, wenn er der Owner des Trails ist,
+den Link dennoch erstellen. Der Trail wird damit Multilingual (dieses
+Feature kann auch entfernt werden und wird nur bei Trails im
+internationalen Verzeichnis funktionieren, da dieses den kleinsten
+gemeinsamen Nenner aller Verzeichnisse darstellt. Nur so st
+gewährleitet, dass der Trail auch wirklich gefunden wird und über das
+Directory angezeigt werden kann).
+
+Das Überprüfen der Rechtschreibung ist wegen eines entsprechenden
+PHP-Moduls, das auf Ispell[1] oder Aspell[2] zurückgreifen kann, kein
+Problem.
+
+
+4) Betrachtung
+Wird die hier vorgeschlagene Realisierung verwendet, steigt der
+Programmieraufwand zwar mehr als bei einer 100%igen Trennung der
+Datenbanken, der Search kann aber fast ohne Modifikationen weiter
+verwendet werden, es sind so viele Sprachen wie nötig einfach zu
+implementieren und schlussendlich hat der Benutzer mehr Freiheit bei der
+grössten möglichen Genaugkeit.
+
+Diese Möglichkeit scheint daher am geignetesten zu sein. Sobald grünes
+Licht gefallen ist, wird mit der Implementierung begonnen.
+
+philip.hofstetter@linktrail.com
+09.10.00  
+
+-- 
+[1] http://fmg-www.cs.ucla.edu/fmg-members/geoff/ispell.html
+[2] http://aspell.sourceforge.net/

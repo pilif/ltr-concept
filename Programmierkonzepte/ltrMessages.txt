@@ -1,0 +1,158 @@
+ltrMessages 1.0
+---------------
+
+1) Problemstellung
+Linktrail soll ein Kommunikationssystem bekommen. Es sollte mit
+verschiedenen Nachrichten-Typen auskommen können, wovon einige per Email
+versendet werden, andere per ICQ und wieder andere gar nicht. Es ist mit
+einer exponentiellen Vermehrung von Nachrichten zu rechnen, die sich
+alle minimal von einander unterscheiden, daher muss im Programmkonzept
+die einfache, modulare Erweiterung durch neue Messages gesichert werden.
+
+Eine genauere Problemstellung, nebst Definition der Funktionalität ist
+[1] zu entnehmen.
+
+Zusammengefasst wird dieses Dokument eine programmtechnische Lösung für
+folgende Anforderungen bieten:
+
+  *) Make Friendship wird durch das neue Message-System realisiert
+  *) Subscribe this Trail-Notification wird über das Message-System
+     realisiert
+  *) Recommend this trail ebenso
+  *) Das System unterstützt (momentan) 20 verschiedene Nachrichten, kann
+     aber jederzeit erweitert werden.
+  *) Das System erlaubt die Anzeige beliebiger Layouts pro Nachricht
+  *) Das System kann Reports/ICQ-Nachrichten versenden.
+
+2) Realisierung
+ 2.1) Datenstruktur
+Eine Nachricht besteht grundsätzlich immer aus einem Nachrichten-Typen,
+einem Empfänger und einem Sender (System oder ein User), einem Datum, 
+an dem die Nachricht entstanden ist und einer Urgency (die aber nicht
+angezeigt wird). Zusätzlich hat jede Nachricht ein Flag, das definiert,
+ob sie gelesen wurde, oder nicht.
+
+Der Rest einer Nachricht ist undefiniert und kann sich unterscheiden; es
+wird aber auch nicht nach diesen Informationen sortiert. Für die
+grösstmögliche Freiheit wird damit folgendes Datenmodell gewählt:
+
+CREATE TABLE 
+ ltrMessages (
+   Message_ID INT not null AUTO_INCREMENT, 
+   Target VARCHAR (32) not null, 
+   MessageType INT not null, 
+   Sender VARCHAR (32) not null, 
+   Date DATETIME not null, 
+   Urgency ENUM ('u','r','s') DEFAULT 's' not null, 
+   Done ENUM ('y','n') not null, 
+   Data TEXT not null , 
+   PRIMARY KEY (Message_ID)
+ ) 
+
+ 2.2) Generische Programmierung
+Um das System beliebig mit weiteren Messages zu erweitern, und um die
+Modularität des Codes beizubehalten, wird ein objektorientierter Ansatz
+gewählt, der innerhalb des in PHP technisch Machbaren liegt. Ansäztze
+wie Class Factories und abstrakte Basisklassen lassen sich damit leider
+nicht realisieren. Dennoch kann über eine "Emulation" der Features
+einiges Erreicht werden.
+
+  2.2.1) Grundsätzliche Darstellung
+Eine PHP-Funktion übergibt das Array der aktuellen ausgelesenen
+Nachricht an eine PHP-Funktion. Diese entscheidet anhand des
+Message-Type-Feldes und anhand eines intern definierten Arrays, was für
+eine Factory-Funktion aufgerufen werden soll, und ruft diese danach auf.
+
+Die Factory-Funktion erstellt ein Objekt, das von ltrMessage
+abgeleitet ist, dessen beiden methoden print_simple und print_complex
+überschreibt und eventuell durch weitere Methoden ergänzt.     
+
+Das erstellte Objekt wird in ein Array eingefügt, dass dann
+schlussendlich an den Aufrufer zurückgegeben wird.
+
+Der Layout-Code-Stack kann dann durch dieses Array iterieren und je nach
+Wunsch print_simple (für das Tabellen-Layout) oder print_complex (für
+die detailierte Ansicht) aufrufen.
+
+  2.2.2) Betrachtung
+Diese Methode erlaubt es, eine weitere Nachricht in das System
+einzufügen, ohne dass grosse Änderungen gemacht werden müssen
+(Erweiterung um ein Message-Objekt, Erweiterung um eine Factory-Funktion
+und Änderung des MT->factory-Arrays). Gleichzeitig bietet das System die
+grösstmögliche Flexibilität bezüglich verschiedener Nachrichten-Typen.
+Passendes Beispiel: Eine Subscription-Notification-Nachricht "weiss", 
+dass sie eine solche ist und kann sich selbst von einem Request zu einer
+Message degradieren, wenn z.B. der betreffende Trail bereits subscribed
+ist. Der Programmcode bleibt auf die jeweiligen Nachrichten zentriert
+und ist somit übersichtlich. Der Layout-Code-Stack auf der anderen Seite
+muss sich nicht mit verschiedenen Nachrichten-Typen herumschlagen.
+
+ 2.3) Aktualisieren von bestehendem Code
+Durch den Umbau auf das Message-basierte System werden etliche bereits
+implementierte Funktionen obsolet, bzw. werden anders dargestellt.
+Dieser Abschnitt verdeutlicht die jeweils notwendigen Änderungen:
+
+  2.3.1) Friendship
+Friendship-Requests, deren Anzeige und deren Beantwortung laufen neu
+über das Message-System. Neben layout-Technischen Änderungen wird
+do_friendship.php obsolet. Freundschaften werden direkt von den
+jeweiligen Message-Objekten erzeugt (das Trennen läuft weiterhin über
+do_friendship.php). Message-Objekte können über ein noch zu
+definierendes Interface mit dem Rest des Programmcodes interragieren
+(resp. können selbst Formulare darstellen und Formulareingaben
+verarbeiten). Dieser Punkt wird zu einem späteren Zeitpunkt in dieses
+Dokument aufgenommen.
+
+Über die Message (MI=12) wird einem Benutzer neu mitgeteilt, wenn eine
+Freundschaft zu Bruch gegangen ist.
+
+Damit wird in der Tabelle ltrFriends der Type (req/stab) unnötig, da ein
+Request über die ltrMessages-Tabelle abgewickelt wird. Ein Eintrag in
+ltrFriends kommt nur noch bei einer vollständigen Freundschaft zustande.
+
+  2.3.2) Recommendation
+Die Recommendation von Trails wird neu auch über ein Message-Objekt
+abgewickelt. Damit behebt sich auch das Problem, dass ein Trail mehrfach
+subscribed werden konnte: Wird ein Trail subscribed, nachdem bereits ein
+Request besteht, und wird danach der Request mit "Yes" beantwortet, ist
+der Trail doppelt subscribed. 
+
+Das jewilige Message-Objekt erkennt, ob eine Subscription besteht und
+setzt sich dann selbst ein Flag, dass es obsolet ist (um weitere
+Datenbank-Abfragen zu vermeiden; ist das Flag vorhanden, wird die
+Datenbank nicht mehr geprüft) und teilt das in den beiden Ansichten des
+Objekts dem User bereitwillig mit.
+
+Die Lösung mit dem Flag bedeutet auch, dass eine Recommendation
+dauerhaft obsolet ist; auch, wenn der betreffende Trail noch vor dem
+Löschen der Nachricht wieder unsubscribed wurde. Das kommt aber insofern
+der Realität nahe, als dass ein Trail, den man unsubscriebed hat, den
+eigenen Erwartungen nicht standhielt und dass damit die Recommendation
+ohnehin sinnlos ist.
+
+ 2.4) Erweiterung bestehenden Codes
+Es muss eine einfache Funktion erstellt werden, die der automatischen
+Absetzung von Nachrichten dient. Bei jeder Änderung eines Trails muss
+neu eine Nachricht versendet werden, um die Klasse der MT=CN abzudecken.
+Ist ein Benutzer mit Permissions != user eingeloggt, muss in allen
+Editier-Bildschirmen eine Checkbox hinzugefügt werden, ob die Änderungen
+als "linktrail", oder als der User selbst vorgenommen werden (definiert
+den Owner und die Urgency der erstellten CN).
+
+
+3) Betrachtung
+Das neue linktrail Message-System wird mit diesem Programmierkonzept so
+flexibel wie möglich und erlaubt eine spätere Erweiterung mit minimalem
+Aufwand. Durch den fortgeschrittenen Zusatand des Prototypen zu diesem
+Zeitpunkt, müssen leider viele Funktionen neu programmiert werden, was
+den benötigten Zeitaufwand explodieren lässt (Implementierung und Test).
+Nichts desto trotz rechtfertigt sich dieser Aufwand, da viele Probleme
+aus [2] gelöst werden können und linktrail sich seiner Philosophie
+(Co-working) weiter annähern kann.
+
+philip.hofstetter@linktrail.com
+22.10.00
+
+-- 
+1) commcenter.txt
+2) userfeedback.txt

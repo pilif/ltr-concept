@@ -1,0 +1,90 @@
+Homepage Redaktionstool 1.0
+---------------------------
+
+1) Overview
+Die Startseite ist das Erste, was ein Besucher von linktrail sieht. Dort
+und in belieibigen anderen Subkategorien, ist es möglich, sogenannte
+Slots einzurichten.
+
+Slots sind kleine Informationseinheiten, die jeweils aus einem oder zwei
+Links, einer Beschreibung und einem Bild bestehen. Das
+programmierkonzept findet sich unter [1].
+
+Diese Bedienungsanleitung erläutert den Gebruauch des
+Redaktionssysstems.
+
+
+2) Voraussetzungen
+Damit Slots erstellt und editiert werden können, muss ein
+linktrail-Account erweiterte Berechtigungen erhalten.
+Slot-Administratoren sind daher Mitglied der Permission-Klasse "red".
+Dies ist von einem Systemadministrator einzustellen.
+
+Nachdem die Neugruppierung durchgeführt ist, kann sollte sich der neu
+erschaffene Redakteuer mit seiner gewohnten Benutzername/Kennwort- 
+Kombination einloggen.
+
+
+3) Slots hinzufügen
+
+ 3.1) Voraussetzung
+Um einen Slot hinzuzufügen, muss sich die URL mindestens eines Trails in
+Reichweite befinden (im Directory rechte Maustaste auf einen Trail und
+"Verknüpfungsadresse kopieren" auswählen; der Pfad des Trails befindet
+sich damit in der Zwischenablage). Zusätzlich wird ein Bild (Format:
+70x54 Pixel), eine Beschreibung und ein Titel des Trails gebraucht
+(nicht notwendigerweise der Titel des Trails selbst).
+
+ 3.2) Vorgehen
+Ganz zuunterst im Directory-Fenster; also dort, wo sich der "Top"-Link
+befindet, zeigt sich einem Mitglied der Permission-Klasse "red" ein
+neues Icon. Dieses dient dazu, einen Slot hinzuzufügen. Bitte anklicken.
+
+Es öffnet sich ein neues Web-Formular (homepage_redaktionstool_1.gif).
+
+Folgende Schritte sind auszuführen (Nummern entsprechen denen auf dem
+Screenshot):
+
+ 1) Hier kann ein Titel eingegeben werden. Dieser Text wird verlinkt
+    überhalb der Beschreibung dargestellt werden.
+ 2) Hier kann der Pfad zu einem Trail angegeben werden. Der Pfad ist die
+    in 3.1 in die Zwischenablage kopierte URL, OHNE das
+    'http://serverame'
+    
+Schritte 1 und 2 können für die Angabe eines zweiten Trails in der
+Eingabezeile weiter unten erneut durchgeführt werden.
+
+ 3) Nun wird eine Beschreibung angegeben. Diese wird auf der Startseite
+    unterhalb der beiden Links dargestellt
+ 4) Ermöglicht es, den Slot relativ zu den anderen Slots zu verschieben.
+    Die beiden Pfeile oberhalb des Listenfeldes verschieben den Eintrag
+    noch oben, resp. nach unten.
+ 5) Der Nächste schritt besteht in der Auswahl eines Bildes. Es ist zu
+    beachten, dass als Formate GIF, JPG und PNG unterstützt werden. Die
+    Bilddatei muss kleiner als 10 KBytes sein!
+ 6) Schlussendlich wird der Slot durch einen Klick auf den Knopf (6)
+    erstellt.   
+
+Nach dem Erstellungsprozess wird die jeweilige Kategorie mit dem Slot
+angezeigt. Slots erscheinen immer oberhalb eventuell vorhandener Trails
+in einer Kategorie.
+
+
+4) Slots Editieren/Löschen    
+Das Vorgehen entspricht weitgehend dem Vorgehen beim Erstellen eines
+Slots. Um den Editierungsmodus zu aktivieren, ist der jeweilige Link
+"Edit this slot" auszuwählen, der sich für Mitglieder der
+Permission-Klasse "red" (oder "admin") neben jedem Slot einer Kategorie
+befindet.
+
+Das Web-Formular, das sich öffnet wird mit den gleichen Schritten wie
+beim Hinzufügen von Slots ausgefüllt.
+
+
+5) Warnung
+Slots werden sofort erstellt. Daher ist die Eingabe des Textes und des
+Bildes im Vorfeld des Publizierens zu überprüfen, damit sich keinerlei
+defekten Texte/Bilder in den jeweiligen Kategorien befinden!
+
+-- 
+1) ltrHpSlots.txt

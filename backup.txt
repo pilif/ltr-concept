@@ -1,0 +1,67 @@
+Backup-Konzept
+--------------
+
+1) Problemstellung
+Linktrail kennt kein wertvolleres Gut, als die momentan vorhandenen
+Daten sowohl auf Stufe des Prototypen, als auch auf Stufe der
+administrativen Daten. Diese Daten müssen gesichert werden.
+
+
+2) Hardware
+Linktrail verwendet ein UW-SCSI-Travan NS-Streamer zur Sicherung der
+Daten. Er ist an den zentralen Windows 2000 Server angeschlossen.
+
+Es sind vier Bänder für den Streamer vorhanden.
+
+
+3) Backup-Ablauf auf Software-Ebene
+Auf dem Prototyp-Entwicklungsrechner (thomas) wird einmal täglich
+mittels eines Shell-Scripts ein Dump der Datenbank gezogen, der eine
+vollständige wiederherstellung der Datenstruktur inklusive Inhalt
+ermöglicht. Dieser wird täglich um 15:30 Uhr zusammen mit dem aktuellen
+Stand der Daten des Prototypen in ein ZIP-Archiv gepackt, das auf den
+zentralen NT-Server (fritz.linktrail.work) per SMB übertragen wird.
+
+Täglich um 15:30 Uhr beginnt die Backup-Software auf
+fritz.linktrail.work mit einem Backup aller vorhandenen Daten. Die
+Software ist in der Lage, die Exchange Maildaten als solche zu erkennen
+und speziell zu behandeln. Offene Dateien können ebenso gesichert
+werden, was den Backup-Lauf am Nachmittag ermöglicht.
+
+
+4) Ablauf auf Hardware-Ebene
+Zwei Personen von linktrail sind für die Abwicklung des Backups auf
+Hardware-Ebene zuständig: Im Wechsel nimmt Abends entweder die erste
+oder die zweite Person das aktuelle Backup-Medium aus dem Laufwerk und
+die jeweils andere Person legt ihr älterers in das Laufwerk ein. Damit
+ergibt sich folgende Verteilung an einem beliebigen Zeitpunkt:
+
+Person A hat ein Band zu Hause. Ein zweites Band entnimmt die gerade dem
+Streamer.
+
+Person B hat ebenfalls ein Band zu Hause. Ein zweites legt sie in den
+Streamer.
+
+Damit ist eine optimale Verteilung der Bänder auf verschiedene Orte
+gewährleistet. Angenommen, beim Transport eines der Bänder geschieht ein
+Umfall, ist immer noch ein nur 2 Tage altes Band bei der jewiligen
+Person verfügbar. Ein noch aktuelleres Band befindet sich im Streamer.
+
+
+5) Betrachtung
+Mit diesem Konzept ist mit dem kleinsten notewenigen Kostenaufwand die
+grösstmögliche Sicherheit erreicht. Durch die Fähigkeit der Software,
+auch geöffnete Dateien zu sichern, kann das Backup während des normalen
+Arbeitstages erfolgen, womit eine top-aktuelle Version jeweils am Ende
+des Arbeitstages das Büro verlassen kann.
+
+Die Sicherung der Unix-Maschinen mittels Cron-Job in ZIP-Files erlaubt
+es, auch ohne Zugriff auf die Bänder auf einen früheren
+Entwicklungszeitpunkt der Software zuzugreifen. Dies bietet weitere
+Sicherheit in Bezug auf Datensicherheit unt Effizienz.
+
+Damit ist die Arbeit ausreichend gesichert.
+
+
+philip.hofstetter@linktrail.com
+21.10.00

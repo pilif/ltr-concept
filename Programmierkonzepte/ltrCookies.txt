@@ -1,0 +1,205 @@
+ltrCookies 1.0
+--------------
+
+1) Problemstellung
+Zur Übertragung von Status-Informationen zwischen verschiedenen Seiten
+über ein Status-loses Protokoll wie HTTP müssen gewisse Tricks
+Verwendung finden. Im Bereich der Web-Programmierung hat sich dabei das
+Verfahren etabliert, einem Besucher beim ersten Aufruf einer Seite, eine
+eindeutige ID zuzuordnen und diese als primären Schlüssel für weitere
+Informationen auf der Server-Seite zu speichern.
+
+Diese Session-ID muss dabei von Seiten-Aufruf zu Seiten-Aufruf vom
+Server zum Client und vom Client zum Server übertragen werden. Findet
+einmal die Übertragung nicht statt, wird eine neue Session generiert und
+die alten Daten sind verloren.
+
+Bislang hat die linktrail-Applikation Cookies, also kleine Text-Stücke,
+die beim Client gespeichert werden können, und die der Client selbstätig
+bei jedem HTTP-Request an den Server sendet, verwendet.
+
+Problem: Cookies können deaktivert werden und werden nicht von allen
+Browsern unterstützt. Wird ein vergebenes Cookie nicht an den Server
+gesendet, wird eine neue Session generiert. Damit war alleine die
+Benutzer-Registrierung ohne Cookies unmöglich. Ein darauf folgendes
+Einloggen ebenso, resp. es musste für jede Seite wiederholt werden.
+
+Es gilt, eine Methode der Session-ID-Übertragung zu finden, die von
+Cookies unabhängig ist.
+
+
+2) Lösungsvorschläge
+Allen nun folgenden Vorschlägen ist gemein, dass sie auf allen Browsern
+gleichermassen funktionieren, dass sie aber gegenüber der Cookie-Methode
+immer Nachteile mit sich bringen. Paradoxerweise ist einer, der allem
+Methoden gemeinsam ist, ein Sicherheits-Problem, das damit genau darum
+auftritt, weil die Medien die Internet-Benutzer undankbarer Weise falsch
+über Cookies informiert haben, indem sie sie selbst als
+Sicherheitsproblem dargestellt haben (was für Session-Cookies, also für
+solche, die nur so lange leben, wie der Brwoser offen ist, nicht gilt).
+
+Alle Methoden codieren nämlich die ID in irgend einer Weise in die URL.
+Damit kann ein Hacker, der den HTTP-Referer-Header auswertet an eine
+gültige Session-ID gelangen und damit unter einer fremden
+Benutzerkennung im System agieren (Session-Hijacking). 
+
+ 2.1) Hostname-poisoning
+Der englische Begriff wurde mit seinem ganzen negativen Beigeschmack
+übernommen. Die Session-ID wird in diesem Fall in den Host-Name des
+Servers verfrachtet. Dies bedingt einen wildcard-DNS-Eintrag. Eine Url
+mit Session-ID sieht dann z.B. folgendermassen aus:
+
+http://oifd32aj3sdoi324as3jdoa.linktrail.com/Computer_and_Internet/
+
+Vorteile der Lösung:
+ *) Die Aplikation muss nicht verändert werden. Die Session-ID ist immer
+    automatisch Bestandteil jeden Requests.
+
+Nachteile der Lösung
+ *) 7val (http://www.sevenval.com) hat ein (umstrittenes) Patent auf
+    diese Methode. Die Rechtslage hier in der Schweiz, wo keine
+    Software-Patente möglich sind, ist etwas unklar.
+ *) Die URL kann sehr leicht falsch in einer Publikation erscheinen
+ *) Der Webserver muss umkonfiguriert werden.
+ *) Das Brand www.linktrail.com wird nicht mehr so gut funktioniern, da
+    ein Besucher das www zwar eingibt, es aber nie zu sehen bekommt.
+ *) DNS- und Web-Caching über Proxies sind nicht möglich.
+ *) Aus allen diesen Gründen ist diese Mehtode bei Slashdot, einer
+    immens grossen, möglichen Zielgruppe, unbeliebt.
+    
+ 2.2) Session-ID per GET/POST
+Die URL jeder Seite wird modifiziert, so dass ein weiterer GET-Parameter
+angehängt wird. Bei Formularen muss die ID innerhalb eines <input
+type=hidden>-Feldes übermittelt werden.    
+
+Auch hier eine mögliche URL:
+
+http://www.linktrail.com/Computer_and_Internet/?SESSID=oifd32aj3sdoi324as3jdoa
+
+
+Vorteile der Lösung:
+ *) Der Webserver muss nicht umkonfiguriert werden.
+ *) Das Brand www.linktrail.com bleibt durch das bestehende www erhalten
+
+Nachteile der Lösung
+ *) Jede Seite; jede URL und jedes Formular muss erweitert werden
+ *) URLs sehen sehr hässlich aus
+ *) HTTP-Caching ist nicht möglich
+ *) Keine Seite wird von Suchmaschinen, die keine dynamische Seiten
+    indizieren, beachtet, da das ? Dynamik impliziert
+
+
+ 2.3) Session-ID im Pfad einer Seite
+Jede URL auf dem Server wird in ihrem Pfad durch eine
+Session-ID-Komponente erweitert. Eine spezielle Server-Konfiguration
+(die nur auf Apache möglich ist und die damit die Portabilität
+einschränkt; in diesem Fall aber hinfällig, da diese Art von Mapping im
+Zuge der schönen URLs sowieso Verwendung findet), ermöglicht es, die 
+tatsächlich eingegebene URL auf tatsächlich vorhandene Dateien zu mappen.
+
+Auch hier eine mögliche URL:
+
+http://www.linktrail.com/oifd32aj3sdoi324as3jdoa/Computer_and_Internet/
+
+
+Vorteile der Lösung:
+ *) Formulare müssen nicht modifiziert werden (keine hidden-Felder; ID
+    ist im Pfad).
+ *) Das Brand bleibt erhalten
+ *) HTTP-Chaching wird für Bilder durch eine weitere
+    Server-Konfigurations-Direktive möglich gemacht
+ *) Die URLs sind trotz der ID-Komponente eindeutig und einfach zu
+    erkennen
+
+Nachteile der Lösung
+ *) Der Server muss umkonfiguriert werden.
+ 
+
+3) Entscheidung
+Die Methode aus 2.3 hat am wenigsten Nachteile und bietet vom Aufwand
+einer Implementierung einen angenehmen Kompromiss zwischen "alle Dateien
+modifizieren" und "keine Modifikation notwendig": Nur absolute URLs auf
+nicht-eigene Seiten müssen angepasst werden. Bei Möglichkeit 2.1, die
+für die Implementierung am angenehmsten wäre, sind zuviele Nachteile
+vorhanden.
+Für die Linktrail-Applikation fällt daher die Entscheidung auf 2.3; die
+Serverkonfiguration ist ein kleineres Übel, als alle Formulare
+anzupassen, zumal sie ja sowieso schon Anwendung findet.
+
+
+4) Implementierung 
+ 
+ 4.1) Web-Server
+Eine (2) rewrite-Rules lesen die Session-ID aus der URL, setzten eine
+Umgebungsvariable mit ihr und schreiben die URL intern ohne die
+enthaltene Session-ID neu:
+
+RewriteRule   ^/(sid-[^/]*)(.*)	$2	[E=SESSION:$1]
+ReWriteRule ^(.*\.(gif|jpg|jpeg))$ http://%{HTTP_HOST}$1 [R]
+
+Die zweite Rule erzeugt einen Redirect, damit Bilder eine saubere URL
+ohne die ID bekommen. Die ID selbst ist in der URL durch ein sid-
+ge-präfixt.
+
+ 4.2) PHPLIB
+Noch vor der Applikation selbst, muss die PHPLIB angepasst werden, damit
+sie mit der Session-ID als Umgebungsvariable (die URL findet keine
+Verwendung mehr) umgehen kann. Sie wurde in diesem Fall generisch
+erweitert, so dass neben "cookie" und "get" eine weitere ID-Methode dazu
+gekommen ist ("env"). Am Interface für die Applikation hat sich nichts
+geändert.
+
+In local.inc; der Konfigurationsdatei der PHPLIB wurde als Methode
+"cookie" und als fallback-methode die neue "env"-Methode angegeben. Zum
+genauen Ablauf eines Requests, sei auf den nächsten Abschnitt
+verwiesen.
+
+ 4.3) Applikation
+Die Applikation musste gewissen Änderungen unterzogen werden:
+
+ *)PHP_SELF beinhaltet von sich aus die Session-ID. Formulare, die an
+   das Ursprungs-Dokument versendet werden, müssen nicht angepasst
+   werden.
+ *)Alle Links werden mit $sess->url("link-Url") mit der Session-ID
+   angereichert. $sess->url() "merkt" von sich aus, ob ein Neuschreiben
+   der URL notwendig ist.
+ *)Eventuelle Location-Header wurden angepasst (auch wenn das zuerst
+   vergessen ging...)
+   
+
+5) Ein Request
+Abschliessend hier die Übersicht über einen HTTP-Request:
+
+ 1) Der Request landet beim Server. Der Client sendet keinen Cookie
+ 2) PHPLIB generiert eine neue Session-ID, sendet einen Cookie und
+    redirected auf die eigene Seite, diesmal aber mit der angereicherten
+    URL
+ 3a) Sind cookies aktiviert, sendet der Server einen Cookie. Für alle
+     weiteren Requests wird dieser Cookie-Wert verwendet. $sess->url
+     verändert die URLs nicht. Damit haben alle weiteren Seiten der
+     Applikation eine URL ohne die enthaltene Session-ID
+ 3b) Der Server sendet keinen Cookie-Header, dafür aber die Sessoin-ID
+     in der URL. PHPLIB wird keinen Cookie-Header mehr senden.
+     $sess->url passt die URLs an. Ab diesem Zeitpunkt sind alle URLs
+     dieser Session modifiziert.
+ 
+6) Schlussbetrachtung
+Es ist eine Schande, wie mächtig die Medien sind. Ohne die Panikmache
+von 96, die bis jetzt immer noch ab und zu aufkommt, wären unschöne
+Hacks mit der Speicherung der Session-ID nicht notwendig: Es könnten
+einfach Cookies verwendet werden.
+
+Die hier verwendete Lösung ist von allen Übeln das Kleinste; bringt es
+doch nur die konzeptionell bedingten Nachteile mit sich.
+
+Damit kann das Konzeptziel zu 100% als erreicht bezeichnet werden, zumal
+die Implementierung zu diesem Zeitpunkt bereits abgeschlossen ist (1.5
+Tage Zeitaufwand; inkl. Evaluation der Möglichkeiten) und nur noch in
+feinen Details getestet werden muss (grobes Testing ist bereits
+vorgneommen worden).
+
+
+philip.hofstetter@linktrail.com
+24.09.00
+
+ 

@@ -1,0 +1,204 @@
+Insite Kommunikation 0.1
+--------------------
+
+1) Problemstellung
+Beider Auswertung des User-Feedbacks[1] sind einige Probleme aufgetreten,
+die sich auf mangelhafte Kommunikation mit dem Besucher reduzieren
+lassen. Es gilt nun, ein Konzept zu finden, diese einzelnen kritischen
+Punkte zu umschiffen und Lösungen zu finden, die sowohl für Profis als
+auch für Anfänger gleichermassen verständlich, effizient und einfach zu
+beidienen sind.
+
+Im wesentlichen angegangene Probleme sind:
+
+ *) Friendship. Was ist das? Warum?
+ *) Erstellen von Trails.
+ *) Subscriptions/Suggestions
+
+
+2) Lösungen
+Keine der hier präsentieren Lösungen zu obigem Problemen muss das Gelbe
+vom Ei darstellen. Dieses Dokument liefert bloss die Grundlage für
+Diskussionen.
+
+ 2.1) Friendship
+Bei den Friendships treten bei den Testern zwei gundsätzliche Probleme
+auf: Zum einen ist nicht klar, weshalb eine Freundschaft gemacht werden
+soll und wie der Ablauf des Aufbauens einer Freundschaft ist, zum
+anderen ist die Verknüpfung mit den Permissions uneindeutig.
+
+Als erster Schritt ein Usability-Problem zu lösen, hat sich bislang
+häufig das Hinterfragen, ob die Funktionalität wirklich benötigt wird
+als meist sehr aufschlussreich erwiesen. Werden also Freundschaften und
+Permissions benötigt?
+
+Ja. Sie sind ein zentraler Bestandteil von linktrail, da sie die
+Philosophie des Kollaborierens darstellen: Mit den Freunden an einem
+Trail arbeiten und ihn der Öffentlichkeit präsentieren. Das ist für
+viele Leute eine Motivation, Content zu erstellen.
+
+Ist in diesem Fall eine Trennung von Permissions und Freundshcaften
+möglich? Würde eine Berechtigungsstufe nicht ausreichen?
+
+Auch nicht: Wie in [1; 3.1.3] zu sehen, besteht eine gewisse Tendenz,
+der Allgemeinheit die Rechte an einem Objekt zu entziehen (Begründung
+ist diesem Dokument zu entnehmen). Damit lässt sich der erste Grundsatz,
+nämlich unnötiges zu streichen, nicht anwenden, da das fragliche Feature
+benötigt wird.
+
+Die beiden Probleme der Benutzer sollen getrennt angegangen werden:
+
+  2.1.1) Herstellen von Freundschaften
+Der erste Kontakt mit Freunden ist auf einer Mypage in linktrail
+(entweder die eigene nach dem ersten Einloggen/Registrieren, oder die
+eines Fremden Nutzers). Der weiter unten angesprochene
+Permissions-Screen bekommt ein neuer Nutzer (fast) niemals als erstes zu
+sehen (Asunahme ist, wenn der Benutzer sich nach seiner Registrierung
+direkt zurück ins Directory begibt, dort einen Trail erstellt und dann
+auf "Change Permissions" klickt. Damit müssen Freundschaften auf der
+Mypage erklährt werden. Folgende 2 Punkte können durchgeführt werden:
+
+  *) Neben dem Text "Friends" im grünen Titelkasten steht der Marker,
+     der in Zukunft für die Kontextsensitive Hilfe verwendet werden
+     wird. An dieser Stelle sei ein "[?]" vorgeschlagen. Ein
+     vorsichtiger Benutzer, der zuerst liest und dann klickt, wird damit
+     auf den Marker klicken und auf die betreffende Stelle in der Hilfe
+     verwiesen.
+     Dort kann das Konzept genau erklährt und ein Bezug zu den
+     Permissions hergestellt werden.
+  *) Ein Nutzer, der das Wagnis auf sich nimmt, vor dem Lesen zu
+     klicken, wird direkt bei einem Nutzer auf "Make Friendship"
+     klicken. Daraufhin kann ein Zwischen-Bildschrim angezeigt werden,
+     der ganz kurz auf das Konzept von Firendships eingeht, erläutert,
+     dass Friendships eine 2-Stufige Sache sind und dem Nutzer die
+     Möglichkeit gibt, den Vorgang abzubrechen. Eine Möglichkeit wäre
+     es, dem Nutzer am Ende der Seite eine Checkbox anztubieten: "Never
+     show me this screen again", wobei diese Methode ähndliche Screens
+     auch an anderer Stelle erfordern würde, um die Konsistenz zu
+     wahren.
+
+  2.1.2) Freundschaften im Trail?
+Nachdem ein Benutzer nun die grundsätzlichen Hinweise zu Freundschaften
+gelesen hat, wird er automatisch den Inhalt des "Change
+Permission"-Screens verstehen. Für den Fall, dass er es nicht gelesen
+hat, befindet sich im Trail neben dem Wort "Friend may" wiederum der
+Kontexthilfe-Marker.
+
+Es empfiehlt sich an dieser Stelle zusätzlich die Überlegung, ob die
+aktuelle Freundesliste im Permissions-Screen nicht nochmals angezeigt
+werden soll, damit sich der Benutzer ein Bild machen kann. Andererseits
+sollte die Freundesliste eines Benutzers überschaubar bleiben, da sonst
+das Vertrauen zu den Freunden wieder sinkt und die vergebenen
+Permissions wieder entfernt werden.
+
+     
+ 2.2) Erstellen von Trails
+Beim Erstellen von Trails; einem zentralen Bestandteil von Linktrail
+zeigen sich erneut Kommunikationsprobleme: Zum einen ist nicht klar wo
+und warum man Trails erstellen kann; zum anderen ist nicht bewusst, wie
+das Erstellen genau vor sich geht, da von der Applikation wenig bis
+keine Hilfestellung erbracht wird.
+
+Die Frage nach Entfernung des störenden Features stellt sich in diesem
+Fall gar nicht erst, da es ein Kernkonzept des Dienstes ist...
+
+  2.2.1) Wo wird ein Trail erstellt?
+Die Augen des Benutzers werden konzept-bedingt automatisch auf das
+"iwantto"-Feld rechts oben gezogen. Dort findet er den Menüpunkt
+"Create a trail", aber leider eben nicht immer... Hat der Benutzer den
+Menüpunkt einmal dort NICHT gesehen, wir er ihn NIE sehen, da die
+Optionen dort mehr oder weniger statisch wirken.
+
+Zusätzlich wird ein Trail als etwas persöndliches aufgefasst. Wo word
+sowas erstellt? Selbstverständlich dort, wo alle anderen persöndlichen
+Daten sind: Auf der Mypage. Damit entsteht ein Missverständnis: Viele
+Nutzer wollen Trails dort erstellen (oder dorthin verschieben), wo es
+nicht möglich ist. Grundsätzlich bieten sich drei Möglichkeiten zur
+Lösung:
+
+  1) Auf der Mypage befindet sich die Funktion "Add a trail". Nach einem
+     Klick öffnet sich eine "Minimalversion" des Directories in der die
+     Position des Trails herausgesucht werden kann. Nach einem Klick
+     erscheint das normale Trail-Hinzufüge-Formular.
+  2) Auf der Mypage befindet sich die Funktion "Add a trail". Ein Klickt
+     öffnet sofort das Trail-Hinzufügeformular. Der Trail wird erstellt
+     und in das "Clipboard" kopiert, muss also irgendwo im Directory mit
+     der Paste-Funktion abgelegt werden. Alternativ befindet sich auf
+     der Mypage ein Container namens "Unfiled Trail", von wo aus Trails
+     in das Directory verschoben werden können.
+  3) An den grundsätzlichen Schritten zur Erstellung eines Trails wird
+     nichts geändert. Auf der Mypage befindet sich dennoch das
+     iwantto-item zur Erstellung eines Trails; es ist aber nicht direkt
+     verlinkt, sondern es wird von einem kleinen Text begleitet, der dem
+     Benutzer empfiehlt, sich in das Directory zu begeben, um einen
+     Trail zu erstellen. Dies kann auch in "verbotenen" Kategorien wie
+     "Home" Verwendung finden.
+
+Leider ist keine der Lösungen optimal: 1) erzeugt eine Redundante
+Bedienung für die gleiche Aufgabe. Der Benutzer muss sich an zwei
+Verschiedene Vorgehensweisen gewöhnen, um seine Aufgabe zu erfüllen. 2)
+dagegen ist weniger stark redundant, verstösst aber gegen die
+grundsätzliche Philosophie, dass alle öffentlich sichtbaren Trails auch
+aus dem Directory erreichbar sind. Viele Nutzer werden die Trails im
+"unfiled"-Gefäss vergessen oder müssen speziell erinnert werden. 3)
+dagegen ist sauber und geradelinig, ist aber gewissermassen "unhöflich",
+da der Benutzer nicht dort das machen kann, was er will: Es wird ihm
+etwas vorgeschrieben. Dafür ist 3) universell einsetzbar.
+
+Die optimale Lösung muss hier in einer Sitzung disktuiert werden.
+
+  2.2.2) Wie wird ein Trail erstellt?
+Dieser Pnukt ist schnell abgehandelt: Über das Formular zur Erstellung
+eines Trails und über den leeren Trail, der nur ein Link-Add-Formular
+beinhaltet, muss jeweils eine Beschreibung, die den aktuellen Schritt
+erklährt. Also etwas im Sinne: "You deceided to create a trail? Welcome
+to step 1: please give title and description" - "Congratulations! You
+just created your trail! Now please add a link: Give a title, an url and
+a description". Das Erstellen des Textes sei hier einer Person
+überlassen, die dazu in der Lage ist...
+
+ 2.3) Subscriptions/Suggestions
+Beide Funktionen sind echte Knacknüsse in der Momentanen Form: Sie sind
+gut erklährt, es gibt Benutzerfeedback und dennoch funktionieren die
+beiden Features nicht richtig, resp. werden nicht 100% verstanden. Eine
+Analyse zeigt auch das grundlegende Problem: Es sind keine Kernfeatures:
+Das System würde auch ohne die beiden Funktionen problemlos laufen
+(zumindest ohne die Notification per Email oder ICQ). Damit wirken sie
+aufgesetzt und müssen mühsam dem Benutzer verkauft werden, was momentan
+suboptimal geschehen ist. Einige Tips:
+
+ 2.3.1) Suggest
+ 
+  *) Friends, die den Trail bereits subscribed haben, werden dennoch
+     aufgelistet; allerdings ohne Checkbox, dafür mit
+     Kontext-Hilfe-Marker
+  *) Die Formulare zum senden an Friends und Externe Benutzer werden
+     getrennt. Häufig macht man das sowieso nicht in einem Schritt. Das
+     Formular zum zweiten Mal aufrufen ist zwar für den einen Benutzer,
+     der einen Trail all seinen linktrail-Freunden und dann noch seinen
+     Mail-Freunden versenden will, etwas mühsam, dafür ist es für alle
+     anderen Leute verständlicher.
+
+ 2.3.2) Subscribe
+Der Text im ssubscribe-Bildschirm muss deutlicher darstellen, dass die
+Notification etwas freiwilliges ist. Alleine ein Ersetzen von "how"
+durch "if" im zweiten Abschnitt könnte helfen. Anderenfalls sollte ein
+"Additionally you may chose how you want to be notified on changes" die
+Zweifel des Nutzers zerstreuen.
+
+
+3) Betrachtung
+Leider lässt sich nicht für jedes Problem eine optimale Lösung finden.
+Das ist aber auch nicht das Ziel dieses Dokuments; soll es doch nur
+Grundlage für eine Diskussion bietetn. Usability ist etwas menschliches.
+Sollen sich auch Menschen (und zwar möglichst viele) mit dem Problem
+befassen!
+
+ 
+     
+
+philip.hofstetter@linktrail.com
+16.10.00
+
+-- 
+1) userfeedback.txt

@@ -1,0 +1,263 @@
+ltrSelfReg (1.02)
+----------
+
+1) Problemstellung
+Schon seit den Anfängen von linktrail besteht der Wunsch nach einer
+Selbstregulierungsfunktion: Der Benutzer soll Qualität zu sehen
+bekommen, ohne dass eine Redaktion Arbeit machen muss. Der Prototyp ist
+nun in einem Entwicklungs-Stadium, indem diese Selbstregulierung der
+nächste nötige Schritt sein muss. Bislang werden Trails in Zufälliger
+Reihenfolge in der jewiligen Kategorie angezeigt. Auf einen Blick sind
+die Anforderungen an die Selbstregulierung:
+
+* Trails sollen innerhalb einer Kategorie nach Qualität geordnet werden
+* Gute Trails einer Kategorie sollen (rekursiv) in die nächsthöhere
+  Kategorie aufsteigen. Aufgestiegene Trails haben relativ zu ihrer
+  Position einen geringeren Wert.
+* In der "schönen" Darstellung des Directories steigen diese Kategorien
+  auf, die tendentiell viele und gute Trails haben.
+* Erzeuger von guten Trails sind gute Leute und haben bestimmte Rechte
+* Gute Trails in von einem Benutzer häufig abonnierten Kategorien werden
+  diesem in dessen MyPage vorgeschlagen
+
+2) Qualität von Trails
+Verschiedene Unterscheidungskriterien definieren die Qualität eines
+Trails. Dabei wird auf Folgendes geachtet:
+
+* Gute Trails sind aktuell (das heisst NICHT jung [1]). 
+* Gute Trails haben keine tote Links
+* Gute Trails haben viele Fans (subscriptions; NICHT views [2])
+* Gute Trails werden von vielen Benutzern empfohlen.
+
+3)Technische Anforderungen
+Dieses Konzept stellt einige Anforderungen an die Datenbank, die
+konzeptbedingt (2-Dimensionale Datenanordnung) mit einem RDBMS schwer zu
+realisieren sind. Von allen sich auf dem Markt befindlichen RDBMS
+unterstützt nur IBM DB2 die Rekursion. Es muss ein Weg gefunden werden,
+die abstrakte Grösse "Qualität" in technischen Rahmen zu fassen.
+Rekursion muss mathematisch emuliert werden. 
+
+Aus Performance-Gründen muss die Zahl an auszuführenden SQL-Abfragen pro
+Seite wie immer kleinstmöglich gehalten werden.
+
+4) Technische Hilfsmittel
+
+ 4.1) Punktesyste
+Bereits häufig findet im Backend der linktrail-Architektur ein
+Punktesystem Verwendung. Punkte erlauben es, den sehr schwammigen
+Massstab "Qualität" auf eine maethematisch bewertbare Grösse zu
+reduzieren. Jeder Trails bekommt also eine gewisse Anzahl Punkte für
+alles, was seine "Qualität" ausmacht. Siehe dazu Abschnitt 2. Punkte
+gelten immer für die Kategorie (und den Level (siehe dazu weiter
+unten)), in dem sich der Trail befindet.
+
+ 4.2) Flache Datenspeicherung
+Die Trails sind mit ihren Pfaden in einer flachen Struktur gespeichert.
+Rekursion bedeutet damit nicht "Hinabsteigen", sondern im Grunde
+genommen nur "String verlängern". Auf die Daten kann unabhängig von
+ihrer tatsächlichen Position im Directory zugegriffen werden. Die
+3-Dimensionale Struktur wird so gesehen NUR SIMULIERT. Damit wird es
+möglich, auch ohne Rekursive SQL-Abfragen das ganze Directory zu
+beinflussen. Aus redaktionellen Gründen und wegen sehr eingeschränkter
+String-Manipulationsfunktionen von MySQL wurde der Level zusätzlich
+eingeführt.
+
+ 4.3) Level
+Der Level ist eine Mathematische/Redaktionelle Vereinfachung der
+Definition der TIEFE eines Objekts. Je höher sein Level, desto tiefer
+ist ein Objekt. Level ist ein unsigned Integer und kann wunderbar in
+Berechnungen verwendet werden. Grundsätzlich lässt sich der Level
+programmtechnisch aus dem Namen (Pfad wie /Computers/Test/Blepp)
+extrahieren (im Beispiel hat Blepp das Level 2), MySQL's
+String-Manipulationsfunkitonen erlauben die nötige Aufteilung von
+Strings aber nicht. Das level wird von der Applikation beim
+Erstellen/Verschieben/Symlinken von Objekten in die Datenbank
+eingetragen. Zum Redaktionellen Wert des "Level"s, siehe unten bei der
+technischen Realisation.
+
+ 4.4)Temporäre Tabellen
+MySQL erlaubt keine Sub-Selects. Als alternativlösung können temporäre
+Tabellen auf Basis einer SELECT-Abfrage erstellt werden. Beobachtungen
+[3] haben ergeben, dass diese Lösung sehr performant ist. Eine
+Sub-Select-Query (oder hier mit temporären Tabellen emuliert), kann mit
+geschickter Programmierung das Absenden von vielen kleinen SQL-Abfragen
+unnötig machen und bietet damit einen grossen Performance-Schub.
+
+5) Technische Realisation
+Mit den oben dargelegten Hilfsmitteln ist die technische Realisation des
+Systemes kein unlösbares Problem mehr:
+
+ 5.1) Setzen von Punkten
+Bewertungspunkte werden den Trails (Kategorien?) immer bei folgenden
+Events zugewiesen:
+
+*) Hinzufügen einer Grund-Punktezahl beim Erstellen eines Trails. Diese
+   kann abhängig von bereits vorhandenen Punktezahlen in der Kategorie
+   sein (z.B. der Durchschnitt), um zu Beginn eine faire Platzierung zu
+   ermöglichen.
+*) Hinzufügen eines grossen Werts bei einer abgeschlossenen Subscription
+*) Hinzufügen eines kleineren Werts bei einer Empfehlung (möglicherweise
+   eine Punktzahl abhängig von der Anzahl der Ziel-Nutzer/Email-Adressen
+*) Hinzufügen einer kleinen Punktzahl für jede Änderung am Trail   
+*) Einmal pro Woche wird eine kleine Punktzahl agezogen für jede Woche,
+   ohne die der Trail geändert wurde. Damit wird der Trail IMMER
+   tendentiell noch schlechter, je länger der Trail ohne veränderung
+   blieb  
+
+Bei der Definition der Punktezahlen ist zu beachten, dass die Punktezahl
+innerhalb des Wertebereiches eines UINT liegen muss, also zwischen 0 und
+(2^32)-1. Es gilt nun einen guten Mittelweg zwischen "keine
+Differentiierungsmöglichkeiten" und "Performance-Verlust durch zu grosse
+Zahlen" oder gar "Absturz durch Überlauf" zu finden. Dies ist nicht Teil
+dieses Konzepts und muss sich durch Studien am laufenden Produkt
+ergeben. Die Punktewerte werden in Form von Konstanten zur leichten
+Veränderung im Code festgehalten.
+
+ 5.2) Abfrage von Trails einer Kategorie (Red. mit Level)
+Womit der wichtigste Punkt erreicht wäre: Wie werden Trails einer
+Kategorie gesucht?
+
+Die Suchabfrage nach Trails wird modifiziert, so dass der Pfadname nicht
+mehr 100% genau ausgelesen wird, sondern es werden ALLE Kategorien des
+aktuellen Nodes und dessen Kindern abgefragt. Hier hilft Punkt 4.2:
+
+Aus 
+ Name = "/Computers/" 
+wird 
+ Name LIKE "/Computers/%" AND Level > 1 AND Level <= 3
+
+Damit werden alle Kinder gefunden, die /Computers/ selbst, oder
+/Computers/<irgendwas> heissen. Hier wird dann der Level-Parameter
+offenbsichtlich: Ein Trail (oder eine Kategorie) mit einem Level=0 wird
+damit NIE AUFSTEIGEN. Egal, was für einen Namen sie hat.
+
+Damit ist definiert, auf welche Weise die Rekursion realisiert werden
+kann. Als nächstens muss die Sortierung der Anzeige definiert werden:
+
+ 5.3) Sortierung nach Punkten
+Die Liste aller petentieller Trails ist nun zusammengetragen. Nun muss
+eine Sortierung erarbeitet werden. Hier finden die in 5.1 definierten
+Punkte Verwendung:
+
+Aus der Datenbank wird ein Feld "Punkte" genereiert, dass z.B.
+folgendermassen aufgebaut werden kann:
+
+ Punkte as ExtraLong * ( 1/(Level - <<thislevel>>) )
+
+Je weiter ein Trail vom aktuellen Level (thislevel ist der Level der
+Abgefragten Kategorie, Level der Level des gefundenen Objekts) entfernt
+ist, desto kleiner wird der Faktor, mit dem die Punktezahl multipliziert
+wird (dieser ist immer > 0 und < 1). Siehe zu einer praxisgerechteren
+Formel das Konzept "ltrPoints.txt"
+
+Zum Schluss wird nach diesem Feld sortiert:
+
+Order by Punkte DESC
+
+ 5.4) Implementierungsnotizen
+Bei der Implementierung des Features musste, da MySQL keine UNIONs
+unterstützt, auf temporäre Tabellen zurückgegriffen werden. Die
+Implemntierung dieses Konzepts in der Linktrail-Applikation verläuft
+damit in den folgenden Schritten:
+
+  1) Zählen aller Trails im betreffenden Node (Kategorie)
+  2) Lesen aller Trails des betreffenden Node in eine temporäre Tabelle 
+  3) Nach 5.3 vorgehen, um aufsteigende Trails zu finden. Schreiben der
+     Gefundenen Kategorien in dieselbe temp. Tabelle.
+     Implementierungsspzifisch ist hier die Entscheidung, die Anzahl der
+     aufsteigenden Trails auf 10% der Anzahl der "heimischen" Trails zu
+     reduzieren.
+  4) Lesen der temp. Tabelle mit vorheriger Sortierung nach Punkten;
+     absteigend.
+
+Interessant an MySQL ist, dass es offensichtlich hoch-optimiert ist: Die
+geschilderten 4 SQL-Abfragen kosten nur 0.02 Sekunden.     
+
+ 5.5) Top Experten
+Die Top-Experten sind die Leute, die in einer Kategorie die
+top-platziertesten Trails (nach obigem Schema) erstellt haben (ohne
+Level-Beschränkung, um genügend Objekte zu finden). Es gibt maximal 100
+Top-Experten pro Kategorie.
+
+Top-Experten erhalten eingeschränktes Administrationsrecht im Directory.
+Siehe dazu aber ein anderes Papier.
+
+Aus den 10 Toppesten Top-Experten wird immer einer ausgewählt (Zufall), dessen
+Beschreibung als Featured Expert auf der Seite aufgelistet wird.
+
+ 5.6) Aufsteigen von Kategorien
+Das Aufsteigen von Kategorien ist insofern nicht mit dem vom Trails zu
+vergleichen, als dass Kategorien prinzipiell nur ein Level aufsteigen
+können, dass die Anzahl der aufsteigenden Kategorien vom Layout eng
+beschränkt wird, und dass aufgestiegene Kategorien klar gekennzeichnet
+werden.
+
+Damit entfällt die Berechnung einer speziellen Punktezahl für jede
+aufgestiegene Kategorie. Aufsteigen können diejenigen Kategorien, die
+
+  *) Genau ein Level (nicht per "Level-Wert", sondern real aus dem
+     Pfadnamen errechnet) unterhalb der Kategorie liegen
+  *) Deren Trails einen hohen Punktedurchschnitt haben.
+
+Aus Geschwindigkeitsgründen wird der Durchschnitt der Trail-Punktezahlen
+nicht bei jedem Aufruf einer Kategorie neu berechnet. Dies geschieht
+anlässlich des einwöchentlichen Laufs des Datenbank-Pflege-Tools, das
+auch die Boni/Mali für einzelne Trails berechnet.
+
+Da diese Verwässerung bei allen Kategorien auftritt, ist sie vertretbar
+und bringt einen enormen Geschwindigkeitszuwachs.  
+
+
+6.) Schlussbetrachtung
+
+ 6.1) Was ist erreicht
+Mit diesem System sind alle Anforderungspunkte erfüllt. Unerreicht blieb
+lediglich die Abwertung bei fehlerhaften Links. Dies da eine
+Link-Prüfung noch nicht 100% im Konzept festgehlaten ist. Eine Änderung
+am vorliegenden Dokument ist zum Einfügen einer Link-Prüfung nicht
+notwendig, da im Abschnitt 5.1, Punkt 4 eine entsprechende Abwertung
+einfach hinzugefügt werden kann.
+
+ 6.2) Risiken und Nebenwirkungen
+Zu den Risiken und Nebenwirkungen gehören folgende Punkte:
+
+* Sehr beliebte Trails einer tiefen Kategorie können auch beim stärksten
+  Abwerte-Faktor immer noch über den eigentlich heimischen Trails
+  erscheinen.
+* Zu Beginn kann es 2nd-Level-Kategorien geben, die voll und ganz aus
+  aufgestiegenen Trails bestehen.
+* Top-Experten sind in 2nd-Level-Kategorien damit möglicherweise gar
+  nicht Experten der jewiligen Kategorie, sondern sind nur
+  Top-Expterten, weil deren Trails aufgestigen sind.
+  
+ 6.3) Das letzte Wort
+Trotz den Risiken ist dieses System ausgereift und wird nach einer
+gewissen Zeit, wenn alle Faktoren definiert sind, gute Dienste Leisten,
+ohne Redaktion auszukommen. Dennoch bleibt der Performance-Verlust
+gering. Durch Moderation können die Punkte in 6.2 (bis auf den letzten)
+ausgehebelt werden.
+
+
+philip.hofstetter@linktrail.com
+12. September 00
+
+Updated:
+philip.hofstetter@linktrail.com
+05.10.00
+
+Updated:
+philip.hofstetter@linktrail.com
+06.10.00
+
+ 
+-- 
+Anmerkungen:
+
+1) Junge Trails sind meistens nicht weltbewegend (wenige Links; alle
+   Links nur von einer Person. Ein junger Trail ist ohnehin aktuell 
+   und wird speziell unter "New Trails" gelistet.
+2) Jeder kann einen Trail mit irreführender Beschreibung und Titel
+   machen, der einen unbrauchbaren Inhalt hat. Er wird häufig
+   angeklickt, bekommt damit eine hohe beliebtheit und wird noch
+   häufiger angeklickt -> Teufelskreis vieler anderer Internet-Seiten.    
+3) von Jody anlässlich der Implementierung von ltrSearch

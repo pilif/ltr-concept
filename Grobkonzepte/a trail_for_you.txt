@@ -1,0 +1,46 @@
+A trail for you? 1.0
+--------------------
+
+1) Problemstellung
+Für den Benutzer von linktrail soll ein weiterer Mehrwert entstehen:
+Ein Besucher der eigenen Mypage hat von dort aus keinen direkten 
+Zugriff zum Trail-Angebot des Systems, hat aber bestimmte Interessen
+innerhalb des Directories von linktrail.
+
+Dem Benutzer sollen auf der Mypage trails angeboten werden, die
+potenziell zu seinen Interessen passen und die er noch nicht kennt. 
+
+
+2) Darstellung
+Unterhalb der Liste mit den Freunden eines Benutzers findet sich auf
+einer Mypage Platz für einen Trail mit Beschreibung. An dieser Stelle
+wird dem Benutzer ein Trail angeboten, den er noch nicht Subscribed hat
+und den ihn höchtwahrscheinlich interessieren könnte (wählt aus
+Kategorien in denen der Benutzer einen Trail subscribed hat, eine aus,
+wählt darin einen Trail aus (random; nach Beliebtheit); siehe dazu aber
+das Programmierkonzept) und bietet an dieser Stelle auch gleich die 
+Möglichkeit, den Trail direkt zu subscriben; dies in Form eines Links 
+"Subscribe", der direkt auf den Subscription-Bildschirm des Trails
+verzweigt.
+
+
+3) Nutzen für Linktrail
+Werbekunden können an dieser Stelle eigene Werbetrails bevorzugt
+plazieren lassen. Die Randomizer-Funktion aus 2 weiter oben wird dann
+dahingehend modifiziert, dass auf bestimmte Kategorien gebuchte Trails
+prioritisiert behandelt werden.
+Dies wird dann aber Bestandteil des Werbe-Konzepts sein.
+
+
+4) Aufwand / Verantwortung
+  
+  Templates:          keine mehr notwendig. Existieren bereits
+  Programmierkonzept: Philip: 3 Stunden (Geschwindikeitsproblem bei der
+                      Anzeige der Mypage)
+  Implementierung:    Philip: konzeptabhängig; mehr als 8 Stunden, da
+                      die Mypage zuerst beschleunigt werden muss, bevor
+		      sie noch weiter mit Funktionen bestückt wird.
+
+
+philip.hofstetter@linktrail.com
+16.10.00		      

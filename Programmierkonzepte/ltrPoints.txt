@@ -1,0 +1,212 @@
+ltrPoints 1.01
+-------------
+
+1) Problemstellung
+In ltrSelfReg.txt wurde angedeutet, dass die Anzahl und Art der
+vergebenen Punkte eines weiteren Konzepts bedarf. Dieses ist mit diesem
+Dokument nun erstellt.
+Es gilt, eine Berechnungsgrundlage zu finden, die die "Qualität" von
+Trails für jeweilige Benutzer einer Kategorie berechnet. Wie technisch
+vorgegangen wird, ist dem oben genannten Konzept zu entnehmen. Dieses
+Papier befasst sich auf mehr philosphischem Weg mit der Sache.
+
+
+2) Zwei Modelle
+Es gibt zwei verschiedene grundlegende Modelle zur Berechnung von
+Punkten. Ein "statisches Modell" und ein "dynamisches Modell" (beides
+Wortschöpfungen des Autors). Unterschiede bestehen in der technischen
+Implementation, als auch im Resultat der Manipulation für den Endnutzer.
+
+ 2.1) Das dynamische Modell
+  2.1.1) Mathematik
+Der in [1; Abschnitt 5.1; letzer] beschriebene Update-Prozess sorgt
+nicht nur wöchentlich für eine Abwertung bereits vorhandener Trails,
+sondern schreibt diesen auch bei jedem Durchgang einen Bonus zu, der auf
+Basis der vorhandenen Subscriptions und Suggestions berechnet wird.
+
+Damit steigt die Punktezahl eines Trails grundsätzlich immer an (bis
+eines späten Tages, ohne dass Subscriptions dazu gekommen wären, der
+Malus (der damit natürlich proportional zum Zeitraum ohne Änderung
+wachsen muss) grösser wird, als der Bonus. Wann immer dieser Zeitraum
+auch ist (resp. wie auch immer die Punkte verteilt sind), es wird spät
+der Fall sein. Damit ist die Punktezahl bei diesem Modell als immer
+ansteigend anzusehen. Die Punktezahl eines schlechteren Trails ist damit
+einfach weniger angestiegen, als die eines guten Trails. 
+
+Dabei entsteht noch ein weiteres Zahlenproblem: Damit der Zeitpunkt, an
+dem der Malus den Bonus überholt irgendwann überhaupt erreicht wird,
+muss der Malus relativ schnell anwachsen, was Trails ohne subscriptions
+wiederum in einen sehr schweren Stand bewegt.
+
+Aus mathematischer Sicht ist dieses Modell zwar eher als statisch zu
+betrachten. Für die Namensgebung war aber die art der technischen
+Implementierung verantwortlich (viele Änderungen am Datenbestand)
+
+  2.1.2) Weltanschauung für den Benutzer
+Benutzer werden dieses System anhand folgender Punkte beim täglichen
+Gebrauch erkennen:
+
+ *) Subscriptions sind extrem wichtig. Ein Trail, der nicht, oder nur
+    wenig subscribed ist, aber nicht ständig gepflegt wird, wird sehr
+    schnell untergehen.
+ *) Ein Trail, der vor 6 Monaten verändert wurde, aber damals relativ
+    viele Subscriptions hatte, wobei keine mehr dazu gekommen sind, wird
+    sich wegen des Bonuses über lange Zeit oben halten können.
+
+  2.1.3) Punktevergabe
+Folgende Punktevergabe scheint für dieses System, unter der Annahme,
+dass ein Update der Punktezahlen alle 7 Tage vorgenommen wird, eine
+Arbeitsgrundlage zu bieten (alle Trails erhalten zur Einführung des
+Systemes eine Grund-Punktezahl von 1000 Punkten). Es ist dabei zu
+beachten, dass diese Punktevergabe exemplarisch erfolgt. Weiter unten,
+bei der zu implementierenden statischen Lösung, werden "realistischere"
+Werte verwendet werden:
+
+Malus für x Wochen ohne Änderung: x*100
+Bonus für x Subscriptions       : x*200
+Bonus für x Empfehlungen        : x*100
+
+Boni, resp. Mali werden innerhalb der Updateings zum Punktewert des
+Objekts addiert, resp. subtrahiert.
+
+Damit ist die Punktebillanz für einen Trail, der zum Zeitpunkt 0 
+10 Subscriptions hat (und, der einfachheit halber, 0 Suggestions), und
+der keine weiteren Subscriptions dazubekommt, während 20 Wochen positiv.
+Will heissen: Während 20 Wochen bekommt der Trail insegesamt einen Bonus
+zugeordnet. Dieser Prozess kann durch Vergrösserung des Malus oder durch
+Verkleinerung des Bonus etwas verkürzt werden. Bald wird dann aber
+rechnungstechnisch das viel einfacher zu implementierende, statische
+Modell erreicht.
+
+
+2.2) Das statische Modell
+  2.2.1) Mathematik
+Der Update-Prozess nimmt nur eine Abwertung der Trails vor (die dann
+innerhalb einer einzigen SQL-Abfrage geschehen kann). Boni für
+Subscriptions werden nur bei neuen Subscriptions berechnet (wobei
+prinzipiell nur jede neue Subscription Punkte generieren kann, oder
+aber, jede Subscription überhaupt nochmals). Mittels dieses Modells
+findet konstant eine Veränderung der Punktezahl in beide Richtungen
+statt (wie gesagt: "statisch" bezieht sich auf die Art der
+Implementierung des Updaters...)
+
+  2.1.2) Weltanschauung für den Benutzer
+Dieses System entspricht in gewissen Sinne mehr dem Versuch, den
+Massengeschmack zu treffen (auf rein statistischem Wege): Während das
+dynamische System den tatsächlichen Wert des Trails für gewisse Benutzer
+als Bewertungskriterium verwendet, gilt beim statischen Modell der
+Geschmack der Masse und produziert damit tendenziell bessere Resultate.
+  
+ *) Subscriptions sind für einen Trail zum Überleben nicht von absoluter
+    Wichtigkeit. Ein häufig upgedateter Trail ohne Subscriptions hat im
+    Vergleich zu einem nie geupdateten Trail mit viel Subscriptions eine
+    reelle Chance,  oben zu bleiben.
+ *) Wird ein vor 6 Monaten erstellter Trail nicht mehr neu Subscribed,
+    so wird der durch den kontinuierlichen "nicht-geupdated"-Malus immer
+    mehr abgewertet. Die Leute, die den Trail noch subscribed haben,
+    erreichen ihn auf ihrer Mypage.
+
+Wie oben gezeigt, kann dieses Modell in zwei weitere Modelle aufgeteilt
+werden. 
+  
+ *) Boni werden nur bei und für NEUEN Subscriptions/Suggestions zu der
+    Punktezahl addiert. Dies sorgt dafür, dass ein guter Trail entweder
+    non-stop geupdated werden muss, oder dass die ganze Zeit erneute
+    Subscriptions fällig sind. Ein guter Trail ist damit ein
+    quicklebendiger Trail.
+ *) Bei jeder neuen Subscription wird ein Bonus für ALLE bereits
+    vorhandenen Subscriptions vergeben. Dies ist eine Mischform zwischen
+    dem statischen und dem dynamischen Modell. Ein Trail fällt in
+    Zeiten, die lange ohne neue Subscription laufen, weiter zurück, als
+    mit dem dynamischen Modell, geniesst aber den Einfluss von bereits
+    vorhandenen Subscriptions, wenn denn wieder eine entsteht. Damit
+    werden die Nachteil des dynamischen Modells ausgehebelt.
+    
+ 
+  2.2.3) Punktevergabe
+Auch hier gilt wieder der Lauf des Out-Daters alle 7 Tage, unter der
+Vorraussetzung, dass zur Inbetriebnahme des Systems alle Trails 10'000
+Punkte erhalten haben. Es wird von zweiten Modell ausgegangen:
+
+Malus pro unveränderter Woche:         : (1.5^x)*10
+
+Bonus pro Neu-Subscription             :  20
+Bonus pro Empfehlung                   :  10
+
+Bonus für x Subscriptions              :  int(20*sqrt(x))
+Bonus für x Empfehlungen               :  int(10*sqrt(x))
+
+Die dynamischen Boni werden VOR dem Addieren des statischen Bonus'
+verrechnet.
+
+Die Komplexheit mancher dieser Funktionen (sqrt ist die Quadratwutzel;
+^ steht für "hoch" und int schneidet Nachkommastellen ab), macht
+jedesmal Sinn:
+
+Datum:   Je länger ein Trail unverändert daliegt, desto grösser wird der
+         Punkteabzug, mit dem er bestraft wird.
+Bonusse: Je mehr Leute einen Trail subscribed/empfohlen haben, desto
+         weniger soll eine einzelne Subscription wert sein. Ziel: Ein
+	 Trail, der alle interessiert muss als solcher nicht unbedingt
+	 einfach gut sein. Trails, die wenige interessieren, aber häufig
+	 gepflegt werden, sollen auch ihre Rechtferigung haben.
+
+
+3) Aufsteigen
+Wenn Trails eine Kategorie aufsteigen, wird ihre Punktezahl mit einem
+Faktor kleiner 1 und grösser 0 multipliziert, was einem Malus für das
+Aufsteigen gleichkommt. Damit sind heimische Trails, die eher "on-topic"
+sind, gegenüber den aufsteigenden Trails im Vorteil.
+
+In Version 1.0 dieses Konzepts wurde die neue Punktezahl auf
+Theoretischer Basis folgendermassen berechent:
+	
+	neu = 1/level-unterschied
+
+Weiterhin stand in Version 1.0:
+"Wobei dies unter Umständen ein zu kleiner Faktor ist (Halbierung des
+Punktewerts pro aufgestiegener Level. Im praktischen Gebrauch müssen
+auch hier weitere Veränderungen vorgenommen werden."
+
+Diese Befürchtung hat sich bewahrheitet. Neu findet folgende Formel
+Anwendung:
+	
+	neu = int(alte_punktzahl * (0.97^(level-unterschied)))
+
+Dies entspricht einer Multiplizierung des Punktewerts mit 0.97 pro
+aufgestigenem Level. Dies ist die absolute Definition einer geometsichen
+Reihe mit der rekursiven Definition
+	
+	a(n) = a(n-1) * 0.97
+
+Der Faktor 0.97 ist noch nicht 100% praxiserprobt, sollte aber einen
+ersten, realistischeren Richtwert darstellen.
+
+
+4) Betrachtung der Ergebnisse
+ 4.1) Auswahl der Methode
+Da das statische Modell, nach Methode 2 am flexibelsten erscheint, wird
+in einer ersten Phase dieses eingesetzt, bis es sich als unbrauchbar
+erweisen hat. Damit soll auch aufgezeigt werden, dass auch die beste
+Theorie die Realität in diesem Fall nicht vorhersehen kann. Ein
+öffentlicher Test soll aufzeigen, ob einzelne Faktoren sich auch in der
+Realität zu bewähren wissen; ob theoretische Überlegungen auch in der
+Praxis Sinn machen.
+
+ 4.2) Schlussbetrachtung
+Etliche Überlegungen sind in die Auswahl des optimalen
+Punkte-Verteilungssystem eingeflossen. Es wurden etliche Annahmen
+bezüglich der Realität getroffen, wobei nie das Ziel ausser Acht
+gelassen wurde, eine Lösung zu finden, die für den Benutzer akzeptabel
+ist. Das Konzeptziel ist zu 90% erreicht. Die restlichen 10% müssen sich
+in praktischen Tests ergeben.
+
+philip.hofstetter@linktrail.com
+28.09.00
+
+updated:
+philip.hofstetter@linktrail.com
+05.10.00
+
+-- 
+[1] ltrSelfReg.txt

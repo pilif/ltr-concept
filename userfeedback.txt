@@ -1,0 +1,293 @@
+Benutzerfeedback
+----------------
+
+1) Einleitung
+In den ersten Septemberwochen wurden 3 frühe Alpha-Tester zu linktrail
+eingeladen, mit dem Ziel, die Applikation zu testen. Über VNC wurden die
+Aktionen eines Benutzers von einem anderen Raum aus betrachtet.
+
+Dieses Dokument liefert die Auswertung der 3 Testläufe. Auf technische
+Probleme wird nicht eingegagen, da sich diese in den einschlägigen
+Bugliste befunden haben und zum jetztigen Zeitpunkt bereits behoben
+sind.
+
+2) Lernauswand
+Bei allen drei Testern zeigte sich eine ähnliche Lernkurve: Reines
+Konsumieren von Trails braucht wenig bis kein Vorwissen. Auch Benutzer,
+die das Internet mehr vom Hörensagen kennen, können sich sofort durch
+das Directory und durch Trails navigieren.
+
+Der Schritt vom passiven zum aktiven Nutzer dauert in der Regel 10 bis
+15 Minuten. Danach steht der erste Trail.
+
+Diese Daten wurden zu einem Zeitpunkt erhoben, als noch keine Help und
+keine Tour im System vorhanden waren. Daruch zeigt sich, dass die
+Applikation weitgehend selbsterklährend ist.
+
+Benutzer, die sich wenig mit dem Internet befassen tendieren dazu,
+vorsichtig vorzugehen und zuerst einen Blick auf die Help und die Tour
+zu werfen (die zum Trestzeitpunkt nicht existierten). Diese Daten
+relativieren sich durch die Tatsache, dass den Testern bekannt war, dass
+sie an einem Test teilnehmen. Real-Live-Bedingungen könnten sich von den
+Testbedinungen unterscheiden.
+
+
+3) Stolperfallen
+Während des Tests sind einige konzeptionelle Probleme im System
+aufgefallen, die im Folgenden, nach Ort des Auftretens sortiert,
+aufgezeigt werden sollen. Auf einige der Probleme wird in einem
+speziellen Konzept detailiert eingegangen.
+
+ 3.1) Allgemein
+  3.1.1)Kommunikation mit dem Benutzer
+Während es für internetgewohnte Leute angenehm ist, ist es für Anfänger
+verwirrend, dass nur sehr wenige der Aktionen eines Benutzers auch
+tatsächlich Feedback in der Oberfläche liefern. Häufig steht man vor
+einer Option, fragt sich ob deren Funktinalität, klickt beängstigt drauf
+und hat damit die Aktion bereits ausgelöst. Der nächste Schritt ist bei
+Internet-Anfängern dann das rückgängig machen der Aktion.
+
+Verbesserungswürdig unter diesen Gesichtspunkten sind:
+ 
+ *) Friendship: Noch bevor man einen eigenen Trail macht; also bevor man
+    die Permissions jemals gesehen hat, wird man mit einer Mypage
+    konfrontiert und sieht dort die Option "Make friendship". Es ist
+    unklar, was sie Funktion bringt und es ist unklar, dass eine
+    Friendship nur ein Request ist, der vom Gegenbüber gutgeheissen
+    werden muss (das Feedback in Form von "Approval awaitet from" reicht
+    nicht aus). Kleine Sicherheitsabfragen oder Erklährungen könnten das
+    Problem lösen. Die Verknüpfung zwischen Friendship und Permissions
+    ist ebenfalls nicht klar. Im Permissions-Fenster muss ein
+    Erklährungstext hin
+ *) Erstellen eines Trails: Der Benutzer wird hier zwei mal
+    hintereinander von einem Formular überrascht. Beide Male finden sich
+    keinerlei weitere Erklährungen über den Sinn und Zweck der zu
+    machenden Eingaben. Ein erklährender Text könnte hier helfen
+ *) Subscriptions: Nicht ganz so deutlich zeigt sich das Problem bei den
+    Subscribtions, da dort wenigstens ein Erklährungstext vorhanden ist.
+    Dennoch ist es unklar, dass man einen Trail subscriben kann, ohne
+    eine Notification zu erhalten.
+ *) Es mag seltsam klingen, aber ist "Trail" ein Wort, dass für ein
+    Benutzer klar genug ist? Vermutlich würde es Sinn machen, das Wort
+    häufiger zu verwenden; auch im Trail selbst.
+ *) Kontakt: Der Aspekt der Zusammenarbeit muss deutlicher bekannt
+    gemacht werden. Hierzu muss einem Besucher die Möglichkeit gegeben
+    werden, einen Experten direkt über das System anzusprechen, ohne
+    aber Spam damit zu erzeugen.
+
+ 3.1.2) Leere Trails
+Offenbar wird der Sinn eines Trails stellenweise nicht 100% verstanden,
+was vor allem an einer gewissen Gewöhnung an andere Services mit
+Directories liegen kann: In Yahoo ist die kleinste Ansammlung von Links
+eine Kategorie. Yahoo kennt das Konzept von "Trails" nicht.
+Häufig entstehen so Trails, die einen oder maximal zwei Links
+beinhalten, da das Trail-Thema viel zu genau gefasst war.
+
+Hier könnte eine weniger feine Gliederung des Directories helfen:
+Niemand würde unter "Software" einen Trail erstellen, der "Exim" heisst
+(eine Mailserver-Software). In einer Kategorie "Mailservers" kann so
+etwas dagegegen viel schneller entstehen. Linktrail verwendet ein
+Directory nur zum Aufhängen von kleinen, autonomen "Subdirectories".
+Nicht zum Aufhängen von einzelnen Links.
+
+  3.1.3) Permissions
+Allgemein liess sich in der bisherigen Testphase in Sachen
+Rechtevergabe an Trails ein eindeutiger Trend in Richtung "Mein Trail.
+Meiner. NUR Meiner" erkennen. Nicht überall ist der Sinn einer
+Kooperation in einer Sache klar; was auch verständlich ist, wenn man
+den Selbstdarstellungstrieb gewisser Leute beachtet, die immer "das
+letzte Wort" in einem Trail haben müssen. Dies zeigt sich durch das
+Einfügen von schlecht recherchierten, nicht zum Trail passenden Links,
+die vor allem dazu dienen sollen, zu zeigen, dass man "auch zu diesem
+Thema etwas weiss". 
+
+Um solches zu verhindern, werden allen Benutzern oft die Add-Rechte
+entzogen, was eindeutig verständlich ist, wenn man in einem Trail einen
+gewissen Qualitätsstandard halten will.
+
+Als Lösung bietet sich hier das Friendship-Konzept an, da es eine
+Selektion der Benutzer erlaubt. Damit verändern sich nur die Trails,
+die sich tatsächlich auch verändern sollen.
+ 
+  3.1.4) Friendship
+Eng mit den Permissions ist die Friendship verknüpft. Eine Friendship
+ist in der realen Welt eine sehr persöndliche Sache. Leider kann die
+linktrail Applikation diesem Anspruch durch die vollkommene Abwesenheit
+von Kommunikation nicht Genüge tun: Eine Freundschaft ist für jeden
+Nutzer ein Fall von einem simplen Klick (was als solches sehr positiv
+ist), es besteht aber keine Möglichkeit des einfachen gegenseitigen
+Kennenlernens zweier Benutzer. Damit Fruendschften eine wahre Abbildung
+der Ralität werden, ist eine umfangreichere Kommunikation zwischen
+Benutzern notwenig. Ein Kommunikationskonzept wird sich mit dieser
+Problematik befassen.
+ 
+  3.1.5) Auflösung
+Vollkommen technischer Natur ist das Problem, dass die Applikation bei
+einer Bildschirmauflösung von 800x600 Bildpunkten nicht optimal
+bedienbar ist, da es faktisch unmöglich ist, das Hauptfenster neben
+einem Trail vollständig sichtbar zu plazieren.
+
+Abhilfe schafft hier einer der drei folgenden Vorschläge (oder, wie
+immer, eine Kombination):
+
+ *) Always on the top: Ein Trail kann, direkt im Trailinnern, so
+    konfiguriert werden, dass er sich immer in den Vordergrund drängt.
+    Damit überdeckt er zwar das Hauptfenster, aber es ist wenigstens
+    möglich, einen Trail abzusurfen, ohne dass er sich immer in den
+    Hintergrund bewegt, nachdem ein Link angeklickt wurde. Diese
+    Funktion muss einfach und ohne reload ausschaltbar sein (Checkbox &
+    JavaScript?)
+ *) Schlankeres Layout des Linktrail-Angebots. Je schmaler das
+    linktrail-Haputlayout wird, desto schmaler kann man auch das
+    Browserfenster machen. Damit wird es möglich, trail und
+    Hauptfenster nebeneinander zu plazieren. Problem: Surft man auf
+    anderen Seiten, ist das Fenster zu schmal, wenn man eine Seite
+    besucht, die auf 800x600 Punkte optimiert ist. Hier hilft obiger
+    Punkt
+ *) Trail in Sidebar: Dies ist für die Zukunft geplant, scheint aber
+    nur auf den ersten Blick eine Lösung zu sein, da die Sidebar das
+    Surferlebnis im Hauptfenster ja ebenso beeinträchtigt, wie ein
+    Trail-Fenster, das sich fest und unverschiebbar neben dem Browser
+    befindet -> keine Lösung
+
+  3.1.6) Assistant
+Ganz allgemein zeigt sich, dass der Sinn des Linktrail-Assistenten nicht
+verstanden wird, was auch kein Wunder ist, ist er doch ohne richtiges
+Konzept einfach in das System eingefügt worden. Es muss dringend (oder
+spätestens anlässlich des Help-Konzepts) definiert werden, was der
+Assistant ist, was er kann und warum.   
+    
+
+ 3.2 Mypage
+Neben dem gernerellen Problem, dass viele Benuzter von der Mypage aus
+einen Trail machen wollen, sind folgende Probleme bei der Benutzung
+aufgetreten:
+
+   3.2.1) Recommendation
+   
+  *)Email-Benachrichtigung bei einer neuen recommendation: Unter
+    Umständen macht es sinn, wenn man beim Eintreffen von neuen
+    Empfehlungen von Trails per Mail benachrichtigt wird. Es muss dabei
+    möglich sein, die Empfehlung direkt aus dem Mail hinaus
+    gutzuheissen, oder abzulehnen.
+  *)Layout-Problem: Die Recommendations sind nicht ohne weiteres als
+    solche erkennbar und gehen in der Trail-Liste unter. Lösung: Bessere
+    Sortierung (zuoberst in der Liste) und andere farbliche Hervorhebung
+   
+   3.2.2) Fehlende Preferences
+   
+  *) Die Anzahl von Objekten pro Seite muss einstellbar sein
+     (Suchergebnisse/Trails auf Mypage/Trails im Directory). Es stellt
+     sich die Frage, ob es sich lohnt, diese drei Zahlen getrennt zur
+     Einstellung anzubieten.
+  *) Sortieren nach: Es muss gespeichert werden, nach welchen Kriterien
+     standardmässig sortiert werden soll. Diese Einstellung kann in den
+     Preferences, oder aber direkt auf der Seite gemacht werden (die
+     letzte Einstellung bleibt gepsichert; wobei das ausschaltbar sein
+     muss)
+
+   3.2.3) Layout-Probleme
+
+  *) Der rechte Rand mit den Friendship-Requests muss deutlicher als
+     "interaktiv" gekennzeichnet werden.
+  *) Standard-Sortierung sollte nach Kategorien sein. Das Dropdown-Feld
+     sollte folgende Reihenfolge aufweisen: Kategorie, ChangeDate,
+     Title, AddDate, Subscribed
+  *) Auf der eigenen Mypage führt das Ändern einer Subscription in einem
+     extern aufpoppenden Trail-Fenster nach einem Klick auf "Subscribed"
+     nicht zum Reload der Mypage (-> Aktiveren von Reloadparent bei
+     ?directcall=<id>)
+  *) Eventuell deutlicher machen, dass sich unter den persöndlichen
+     Infos noch der eigentliche Wert der Mypage befindet: Die Trails.
+  
+  3.3 Directory
+Auch auf einer Directory-Seite befinden sich einige Stolperfallen, die
+sich allesamt als Kommunikations/Usability-Probleme entpuppen:
+ 
+  *) Es ist dem Benutzer nicht klar, wie man denn einen Trail erstellt,
+     und warum das auf der Homepage nicht geht. Eventuell muss das
+     Iwantto-Item "Add a trail" dennoch angezeigt werden; allerdings
+     unverlinkt, neben einem Hinweistext, weshalb es an dieser Position
+     nicht geht.
+  *) Es ist nicht klar, dass "Search in Experts" viel schwächer ist, als
+     die normale Suchfunktion und vor allem, dass man meist mit "Search
+     an Expert" gar nicht das meint, wozu der Expert-Search überhaupt
+     vorhanden ist. Vielleicht sollte man "Search in Experts" durch
+     "Search in Adressbook" oder so umbenennen. Der Normale search
+     liefert nämlich bereits empfohlene Experten zu einem Thema.
+  *) Es muss angezeigt werden, wer man eigentlich ist. Vielfach ist dem
+     Benutzer nicht klar, als wen man sich eingeloggt hat. In
+     Reallive-Bedingungen ist das insofern aber kein grosses Problem,
+     als dass man nicht mehr als einen Benutzer-Account hat. Dennoch
+     kann es irritierend sein, zumal viele anderen Seiten im Internet
+     den aktuellen Benutzernamen anzeigen. Von einem Tester wurde
+     empfohlen, aus "Logout", "Logout username" zu machen.
+  *) Es ist unklar, dass das Verschieben von Trails über das Directory
+     läuft, dass aber zum Löschen oder Editieren der Trail geöffnet
+     werden muss. Lösung: Neben jeden eigenen Trail kommt neben des
+     "move"-Links ein "edit" und ein "delete" hin.
+     
+  3.4 Trails
+Nur wenige Probleme sind mit den Trails aufgetreten, laufen aber alle
+auf fehlende Kommunikation hinaus:
+
+  *) Die Anzeige von Edit-Button und "What's related" ist problematisch:
+     Daneben, dass man die Lupe nicht versteht, wird das Layout von
+     einem IE 4.5 und 5 auf MacOS zerstört (was sich aber durch Tabellen
+     minimieren lässt). Vielleicht wären Textlinks unterhalb der
+     jeweiligen Links eine bessere Lösung
+  *) Der Versuch, einen Trail/Link ohne Desciption zu erstellen, sollte
+     mit einer Sicherheitsabfrage verbunden werden, da der Wert eines
+     Trails ohne Beschreibung weniger hoch ist und die Suchergebnisse
+     verfälschen kann.
+  *) Fehlende Rechte müssen deutlicher gemacht werden: Hat ein Benutzer
+     keine Rechte, einen Link zu einem Trail hinzuzufügen, so muss das
+     klar kommuniziert werden; dasselbe bei fehlenden Edit, Move oder
+     Delete-Rechten (der Edit-Button kann aber wegen der Seltenheit
+     seines Auftretens weiterhin nur bei ausreichenden Rechten angezeigt
+     werden). Sinn: Angenommen ein Benutzer will einen Link löschen und
+     verwendet dazu folgereichtig die "Edit"-Funktion, hat aber keine
+     Delete-Rechte, so irritert ihn das und er sucht weiterhin nach
+     einer Löschfunktion.
+  *) Owner oder Subscriber eines Trails, die Freunde eines Recommenders
+     sind, sollten in der Liste der "Opfer" einer Recommendation dennoch
+     aufgeführt werden, wenn auch ohen Checkbox (dafür aber mit einem ?,
+     das erklährt, weshalb die Box fehlt)
+  *) Links direkt auf Files, die nicht html, php oder andere Textfiles
+     sind, sollten unterbunden oder zumindest mit Sicherheitsabfrage
+     versehen werden.
+  *) Die Darstellung leerer Trails unterscheidet sich von der mit
+     mindestens einem Link drin. Dies vor allem um das Hinzufügen eines
+     Links einfacher zu machen. Hier müsste ein Erklährungstext hin.
+
+Schlussendlich zeigt sich bei den vielen 404er-Fehlern, die in Trails
+entstehen können, weil sie sich unterumständen mit Links weit innerhalb
+einer Site befassen, dass es sich lohnen würde, einen Link-Checker
+einzubauen. Dies muss Inhalt eines weiteren Konzepts sein.
+
+
+4) Abhängige Konzepte
+Von diesem Dokument, das allgemeine Probleme und kleinere Detailprobleme
+aufzueigen soll, hängen volgende Konzepte ab:
+
+  *) Insite-Kommunikation: Wo muss welcher Erklährungstext wie
+     eingebunden werden? Wie sieht die Integration der Hilfe in die
+     Applikation aus (Stichwort: Kontextsensitive Hilfe)
+  *) Help: Wie funktinoniert die Linktrail-Hilfe? Was ist der Assistant?
+  *) Commcenter: Wie können Benutzer innerhalb von linktrail mit
+     einander kommunizieren?
+  *) Linkchecker: Wie soll ein Link-Checking-Mechanismus funktionieren?   
+  
+  
+5) Schlussbetrachtung  
+Das vielseitige Feedback der Alpha-Tests (inhouse wie auch extern) haben
+einige Probleme, aber auch einige positive Aspekte des Systems
+aufgzeigt. Die Analyse zeigt, dass vor allem in Sachen Benutzerführung
+einige Deffizite bestehen, die vor einem Launch behoben werden müssen.
+
+Gravierende technische Probleme sind anlässlich des Tests nicht
+aufgetreten.
+
+
+philip.hofstetter@linktrail.com
+16.10.00

@@ -1,0 +1,134 @@
+ltrTopExperts 1.0
+-----------------
+
+1) Problemstellung
+Die beiden Kästchen "Top Experts" und "Featured Expert" in der Sidebar
+des Linktrail-Layouts waren bislang mit Dummy-Inhalten gefüllt. Mit der
+Einführung der Selbstregulierung, boten sich genügend Möglichkeiten, die
+Kästchen mit richtigem Inhalt zu füllen.
+
+Dises Dokument erläutert, was Experten in Linktrail sind, wie sie
+entstehen und, was die Redaktion dabei tun muss/kann
+
+2) Module
+Das Experten-System von linktrail besteht aus zwei verschiedenen
+Modulen: Auf der einen Seite ist die Applikation in der Lage,
+kategorien-spezifische Experten zu berechnen, auf der anderen Seite kann
+die Redaktion einen bestimmten Experten an einer beliebigen Stelle
+künstlich hervorheben.
+
+Zusätzlich kennt das System zwei verschiedene Arten von Experten: Eine
+ganze Menge Top-Experten und jeweils ein einziger "Featured Expert" pro
+Kategorie
+
+ 2.1) Top Experten
+Top-Experten sind Leute, die sich mit der Thematik der aktuellen
+Kategorie auskennen. Sie sind Experten und stehen für Benutzer
+möglicherweise Rede und Antwort. Sie erscheinen im dritten Kasten von
+oben in Form einer Liste. Ein Link führt auf eine gesonderte Seite, auf
+denen alle Experten aufgelistet sind, sofern mehr als die auf der Liste
+im Directory vorhanden sind.
+
+Top-Experten werden Kategorien-Spezifisch berechnet. Top-Experten sind 
+
+ *) Besitzer eines Trails in einer Kategorie
+ *) Subscriber eines Trails in einer Kategorie
+ 
+Aus technischen Gründen sind Experten nicht in der Lage, unabhängig von
+Trails aufzusteigen: Um Experten aufsteigen zu lassen, wäre die
+Einführung einer Art Experten-Punkte erforderlich. Experten-Punkte sind
+aber pro Kategorie zu vergeben, da ein Benutzer in den verschiedensten
+Stellen des Directories einen Trail gemacht/subscribed haben könnte.
+
+Damit müsste eine Experten-Punkte-Tabelle in der SQL-Datenbank alleine
+x*y Datensätze haben (x steht für Anzahl Experten im System, y für die
+Anzahl der Kategorien). Zusätzlich müssten die Experten ECHT rekursiv
+gesucht werden, da eine Abflachtung wie in [1] wegen dieser Extra-Punkte
+pro Kategorie nicht möglich ist.
+
+Damit eine Kategorie nicht leer ist und immer genügend Experten hat,
+wird die Aufsteige-Regel für Trails aus Subkategorie ausser Kraft
+gesetzt, wenn sich in einer Kategorie weniger als 10 Trails befinden
+(der Wert ist in config.inc definierbar). Damit wird versucht, in jede
+Kategorie mindestens 10 Trails zu bekommen, wobei natürlich entsprechend
+mehr Trails aufsteigen können (die Punkte-Regel gilt weiterhin).
+
+Top-Experten werden folgendermassen berechnet:
+
+ 1) Es werden alle Trails der Kategorie gesucht (für die Anzeige ja
+    ohnehin erforderlich der Kategorie). Die Aufsteige-%-Regel wird nach
+    obigem Muster nicht beachtet
+ 2) Alle Besitzer dieser Trails sind "Toppest-Top"-Experten (die können
+    den Zustand "Featured" erreichen. Diese werden sortiert nach Anzahl
+    an Trails, die sie in dieser Kategorie erstellt haben und nach
+    Punkten dieser Trails
+ 3) Alle Experten werden gesucht, die nicht Owner eines der 
+    Trails der Kategorie sind, die aber einen der ersten
+    30 Trails (soritert nach Punkten) in dieser Katetorie subscribed
+    haben. Diese sind auch Top-Experten, können aber nicht "featured" 
+    werden. Sortiert wird nach Anzahl subscribeder Trails und dann 
+    nach letztem Einlogg-Datum (aktivere User zuerst)
+    
+Im Directory angezeigt, werden die ersten 15 dieser Top-Experten (auch
+dieser Wert ist in config.inc definierbar).
+
+ 2.2) automatischer Featured Expert
+Von den Toppest-Top Experten in 2.1 wird ein zufällig ausgewählter
+Benutzer zum "Featured Expert" (FE). An seinen Rechten ändert sich damit
+nichts; er wird nur deutlicher hervorgehoben. Die Autoamtik zeigt jeweils
+den Namen des Experten, zusammen mit seiner Beschreibung (das, was er
+unter "About me" angegeben hat, aber ohne eventuelle HTML-Tags). 
+
+ 2.3) manueller FE
+Hat eine Kategorie keine Top-Experten (hat sie also keine Trails und
+sind keine Trails zu ihr aufgestigen (das trifft nur auf Home, oder eine
+ganz leere subsubsub-Kategorie ohne Kinder zu), oder will die Redaktion
+aus anderen Gründen einen Experten besonders hervorheben, so kann sie
+das tun, indem sie ein spezielles Tool verwendet.
+
+  2.3.1) GUI
+Die GUI gliedert sich in mehrere Bereiche: Benutzer mit den Rechten
+"red" (die also auch die Homepage updaten dürfen), sehen unterhalb jedes
+Featured-Expert-Texts den Link "Edit this Expert". Für diese Benutzer
+ist der Kasten "FE" auch dann zu sehen, wenn kein FE gefunden werden
+konnte.
+
+Ein Klick auf diesen Link zeigt eine Seite an, die mit der
+Edit-Directory-Seite vergleichbar ist: Im oberen Teil des Fensters
+befinden sich die aktuellen Subnodes; im unteren Teil befindet sich ein
+Formular in welchem der Redakteur die Wahl hat, ob das System den FE in
+der aktuellen Kategorie selbst berechnen soll (nach 2.2), oder ob ein
+eigener FE definiert werden soll. In letzterem Fall kann ein Name eines
+Experten zusammen mit einer Beschreibung angegeben werden (beim Experten
+wird in der Datenbank überprüft, ob er auch tatsächlich existiert)
+
+  2.3.2) Reaktion des Systems
+Wird ein solcher hart definierter FE gefunden, wird auf jeden Fall
+dieser angezeigt. Die Zufalls-Automatik wird ausser Kraft gesetzt. Diese
+Einsetzung eines FE ändert aber nichts am TE (Top-Experten) Zusatand
+des Benutzers. Will heissen: Ist ein Benutzer nicht TE einer Kategorie,
+so ist er es auch nicht, nachdem er von der Redaktion zum FE gemacht
+wurde. Damit gilt die Relation: "Jeder Top-Experte kann "Featured
+Expert" sein, aber nicht jeder FE ist auch Top Experte". Diese
+Restriktion als Fairness gegenüber den ECHTEN TE's.
+
+
+3) Schlussbetrachtung
+Das Konzeptziel ist insofern erreicht, als dass die
+linktrail-Applikation die Expterten nun korrekt berechnen kann. Es kann
+eine Liste an Top-Experten erstellt werden; es kann ein Featured Expert
+gefunden werden. Ist mal kein solcher aufzufinden, so hat die Redaktion
+die Möglichkeit, einen einzusetzen.
+
+Damit ist die Problemstellung zu 100% erfüllt, auch wenn nicht die
+technisch anspruchsvollste Methode gewählt wurde, die auch in
+leeren Kategorien mit Kindern (was es sowieso nur auf künstliche Art und
+Weise geben kann (siehe Home)) Top-Experten liefern kann.
+
+
+philip.hofstetter@linktrail.com
+08.10.00
+
+
+-- 
+[1]: ltrSelfReg

@@ -1,0 +1,179 @@
+ltrLoadBalance 1.0
+------------------
+
+1) Problemstellung
+Die Linktrail-Applikation wird, so sie fertig gestellt ist, auf ein
+grosses Publikum los gelassen. Aus Kosten- und Sicherheitsgründen,
+sollen dabei mehrere Front-End-Server Verwendung finden, die für die
+Besucher der Seite aber konsequent als nur eine Maschine erscheinen.
+Load Balancing ist das Stichwort, das sich zu diesem Bereich der
+Netzwerkkunst etabliert hat.
+
+Folgende Problemstellung soll in diesem Dokument behandelt werden:
+
+*) Die Lösung muss der momentanen finanziellen Kapazität von linktrail
+   Inc. angepasst sein, resp. soll so billig wie möglich sein. Reine
+   Black-Box-Hardware-Lösungen schliessen sich so aus
+   
+*) Die Lösung muss redundant laufen können. Fällt sie aus, sollte sofort
+   ein Backup zur Verfügung stehen. Eine Downtime von max 5 Minuten wäre
+   das Ziel
+   
+*) Die Web-Applikation selbst soll so wenig Veränderungen wie möglich
+   unterworfen sein. Am allerbesten wäre dabei, dass ein Client
+   garantiert während der ganzen Session auf den gleichen Web-Server
+   geleitet würde, da so das Sessoin-Management nicht zentral zu
+   erfolgen bleibt. Siehe dazu später mehr.
+   
+2) Hardware
+Eine reine Hardware-Lösung ist aus Kostengründen ausgeschlossen.
+LoadBalancing-Software kann zusammen mit den Firewall-Tools auf einem
+Rechner installiert werden, so dass die Hälfte der reinen
+Hardware-Kosten wegfällt. Durch die Verwendung von
+NoName-Standard-Hardware kann der Preis weiterhin vermindert werden.
+Daher gilt als Hardware-Empfehlung ein NoName-Rechner mit 128MB RAM,
+Pentium III 600 Mhz (minimum; Firewalling und Load-Balancing sind beide
+Rechenintensive Aufgaben). Weitere Kriterien sind nicht anzubringen. Als
+Betriebssystem findet wie immer Linux Einsatz.
+
+Die Hardware muss in doppelter Ausführung angeschafft werden, damit im
+Falle eines Ausfalles sofort Ersatz bereit steht und die Aufgabe der
+defekten Maschine übernehmen kann.
+
+
+3) Software
+Alle nun folgende Software basiert auf einer 1/2-tägigen Forschung im
+Internet. Die Liste ist damit nicht komplett und kann zu einem späteren
+Zeitpunkt erweitert werden. Die aktuelle Software-Liste findet sich
+immer im Linktrail-Prototypen unter
+
+http://prototyp.linktrail.work/Computers_and_Internet/Internet/Load_Balancing_Software
+
+ 3.1) Eddie
+Eddie ist vom Handy-Hersteller Ericson gesponsert. Er ist ein
+OpenSource-Projekt, das in der unbekannten Programimersprache "Erlang"
+geschrieben wurde. "The Royal Melbourne Institute of Technology" in
+Australien unterstützt das Projekt. Der Vorteil des Produkts ist neben
+des Preises (alle hier vorgestellten Projekte sind OpenSource und damit
+kostenlos), dass es auf HTTP-Ebene arbeitet. 
+
+  3.1.1) Vorteile
+*) Gut dokumentiert
+*) Keine Kernel-Patches erforderlich
+*) Arbeitet auf HTTP-Protokoll-Ebene und arbeitet damit ohne jede
+   Modifikation der linktrail-Applikation. Als Extra können damit die
+   Session-Daten lokal gespeichert werden.
+
+  3.1.2) Nachteile
+*) Sehr seltsame und unbekannte Programmiersprache. Möglicherweise
+   existiert aber zu dieser ein iX-Artikel voll der lobenden Worte
+
+
+ 3.2) Linux Virtual Server
+Einige Kernel-Patches für Linux, die IP based Load Balancing möglich
+machen. Hier ist im Gegensatz zu Eddie eine wohl bekannte Sprache, C, im
+Einsatz. Auch LVS ist OpenSource.
+
+  3.2.1) Vorteile
+*) Gut dokumentiert
+
+  3.2.2) Nachteile
+*) Kompex zu konfigurieren
+*) Das LB funktioniert auf IP-Ebene. Dies mag auf den ersten Blick wie
+   ein Vorteil aussehen (mehr Perfomance), bringt aber den Nachteil mit
+   sich, dass die PHP-linktrail-Applikation modifiziert werden muss
+   (siehe dazu die Theorie am Ende)
+ 
+
+ 3.3) High Availability Server Project
+Dies ist ein Benutzerfreundliches FrontEnd zur Konfiguration von LVS.
+Die Software wurde von einem RadHat-Programmierer entwicklelt und kann
+nun wahlweise kostenlos aus dem Web geladen oder für $1000 gekauft
+werden.
+
+Entscheidet man sich für LVS, so ist auf jeden Fall dieses Projekt zu
+berücksichtigen.
+
+ 3.4) Jamming.NET
+Ein in Java programmiertes Tool, das wie Eddie auf HTTP-Ebene Arbeitet.
+Es ist schlecht dokumentiert. Seine Programmiersprache ist mit gewissen
+Vorurteilen kombiniert ein echtes KO-Kriterium.
+
+
+4.) Auswertung der Software
+Einzig wirklich brauchbar, da sehr einfach, scheint die Eddie-Lösung zu
+sein. Eine Test-Installation wird in naher Zukunft vorgenommen werden.
+Der Installationsbericht wird an dieser Stelle niedergeschrieben werden.
+
+
+5.) Einige theoretische Konzepte
+
+ 5.1) FailOver per DNS
+Neben einem Load-Balancing ist ein FailOver bei einem Ausfall ein
+wichtiges Kriterium. Eine billige, automatische, Realisation basiert auf
+der DNS-Technologie[1]:
+
+Es soll vom Beispiel www.linktrail.com ausgegangen werden: Als
+IP-Adressen für diese Domain ist die IP-Adresse des einen
+Online-LoadBalancers eingetragen. Der Backup-LB überprüft nun
+regelmässig die Verfügbarkeit des primären Rechners. Fällt dieser aus,
+wird ein dynamisches DNS-pdate angefordert, dass die IP-Adresse für
+www.linktrail.com nun der Backup-LB ist.
+
+Da DNS häufig mich Caching arbeitet, muss die maximale Caching-Time der
+Linktrail-DNS-Records niedrig eingestellt werden; um der Forderung nach
+max 5 Min. Downtime pro User nachzukommen, auf die besagten 5 Minuten
+(meistens wird die Downtime niedriger sein, da die 5 Minuten nur genau
+dann auftreten, wenn ein Benutzer gerade im Moment des Ausfalls eine
+DNS-Anfrage gemacht hat und auf den defekten Server geleitet wurde).
+
+ 5.2) HTTP-Sessions
+Wie allgemein bekannt ist, ist HTTP ein Session-loses Protokoll.
+Eventuelle Session-Daten (wie ein Zustandsflag "logged on/not logged
+on"), müssen auf dem Server gepseichert werden. Der Benutzer wird anhand
+einer ID identifiziert, die vom Browser an den Server übergeben wird.
+Dieser lädt dann die zugeöhrigen Session-Daten. Es ist offensichtlich,
+dass damit ein Benutzer immer an den gleichen Server seine Anfragen
+stellen muss, oder aber, dass die besagten Session-Daten an einer
+Zentralen Stelle gespeichert sind. Letzteres würde faktisch bedeuten,
+dass die Session-Daten auf der Datenbank gepsichert werden, was auf
+dauer ein Performance-Problem darstellt, da sich diese Daten häufig
+ändern und genausso schnell (etwa alle 30 Minuten) ungültig, resp.
+veraltet werden. Optimalerweise würden die Daten im Filesystem des
+Servers gespeichert werden.
+
+Dies geht aber nicht, wenn die LB-Lösung nicht garantieren kann, dass
+ein Client immer den gleichen Server erreicht. Um dies zu garantieren,
+wird entweder eine IP-Adressen basierende Methode verwendet, die aber
+das LB kaputt macht, da a) ein Benutzer mehrere IP-Adressen haben kann
+und b) eine IP-Adresse mehreren Benutzern gehören kann. B) verwäassert
+dabei das LB, wärhend a) es kaputt macht; zumindest die Möglichkeit
+des Speicherns auf dem Server.
+
+Ein HTTP-Basierender LB kann geisse features der HTTP-Prokolls
+verwenden, um Benutzer wesentlich besser iedntifizieren zu können. Eddie
+z.B. wertet Cookies oder Session-IDs in der URL aus.
+
+
+6) Schlussbetrachtung
+Die optimale Lösung ist noch nicht gefunden. Eddie ist aber auf jeden
+Fall einen Blick wert. Dieses Dokument wird bis zu einer endgültigen
+Lösung (sobald die Server geliefert sind und die Software überhaupt
+sinvoll getestet werden kann) konstant aktualisiert werden.
+
+philip.hofstetter@linktrail.com
+19.09.2000
+
+
+
+
+
+
+
+
+-- 
+Anmerkungen
+
+1) Eddie verwendet genau diesen Ansatz, was den Autor zum einen in
+   seiner Annahme, dass das DNS-Konzept funktinieren wird, bestätigt,
+   zum anderen eine gewisse Symatie zu Eddie weckt...

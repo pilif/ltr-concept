@@ -1,0 +1,96 @@
+ExpertPoll 1.0
+--------------
+
+1) Problemstellung
+Trails sind im linktrail System in einer Directory-Struktur angeordnet.
+Dabei ist es unmöglich, dass eine Redaktion eine perfekte
+Directory-Struktur aufbaut: Zu vielfältig sind die Themen und zu
+lebendig ist das System. Probleme eines unsauber aufgebauten Directories
+sind:
+
+  *) Leere Directory-Kategorien. Diese entstehen, wenn ein zu
+     spezifisches Thema zu stark aufgesplittet wird. Momentan im
+     Prototypen ist das unter /Science/Earth_and_Environment/ zu sehen,
+     wo alle Subkategorien leer sind.
+  *) Übervolle Directory-Kategorien. Diese entstehen, wenn ein sehr
+     beliebtes Thema zu "offen" gefasst ist; also Subkategorien fehlen.
+     
+Um diesen beiden Problemen zu begegnen, müsste eine Redaktion konstant
+den totalen Überblick über den gesamten Datenbestand haben. Dies steht
+in Kontrast zu linktrails Philosophie, keine Redaktion zu brauchen.
+
+Es muss eine Lösung gefunden werden, die es erlaubt, die optimale
+Directory-Struktur zu finden, ohne dass eine allmächtige Redaktion immer
+die volle Kontrolle haben muss.
+
+
+2) Vorhandene Resourcen
+Es ist die Philosophie von linktrail, möglichst viel Arbeit auf die
+Benutzer des Services abzuwälzen, resp. den Benutzern möglichst viel
+Freiheit bei der Gestaltung des Services zu lassen. Es drängt sich daher
+auf, die Strukturierung des Directories ebenfalls in die Hände des
+Benutzers zu legen.
+
+Eine gute Struktur kann entstehen, wenn ein bestimmter Teil des
+Verzeichnisses von Experten der jeweiligen Kategorie administriert
+werden kann. Der Gedanke ist klar: Ein Experte kennt sich in seinem
+Fachgebiet aus und kann damit objektiv eine gute Struktur erschaffen.
+
+Linktrail bietet bereits ein Framework zum ermitteln von Experten einer
+Kategorie. Damit können ebendiese Experten zur Administration des
+Directories herangezogen werden.
+
+
+3) Altgriechische Demokratie
+Eine Kategorie kennt je nach Anzahl und Verteilung von Trails von
+einigen wenigen bis zu einer grossen Zahl an Topexperten[1]. Diese
+sollen an der Administration eines Directory-Knotens beteiligt werden.
+
+Dabei findet eine Art demoktratische Entscheidung statt: Jeder
+Topexperte einer Kategorie hat die Möglichkeit, diese zu bearbeiten.
+Dabei ist die GUI der des normalen Haupt-Administrators zu vergleichen,
+wobei folgende Einschränkungen gelten:
+
+ *) Ein Top-Experte kann keine Kategorie löschen
+ *) Ein Top-Experte kann nur Kategorien administrieren, in denen er
+    Top-Experte ist.
+ *) Ein Top-Experte kann Symlinks nur dann erstellen, wenn er in BEIDEN
+    betroffenen Kategorien Top-Experte ist
+ *) Ein Top-Experte hat keinen Einfluss auf den "Level"-Wert, da das die
+    Transparenz der Selbstregulierung beeinträchtigen würde.
+
+Hat ein Experte eine Modifikation an der Directory-Struktur
+vorgenommen, wird diese nicht sofort ausgeführt: Unterhalb des
+"Iwantto"-Kastens sehen nun alle anderen Top-Experten der Kategorie eine
+Art Abstimmungsformular, bei der jeder Experte seine Meinung über den
+Vorschlag abgeben kann (Ja, ich will editieren / nein. die Kategorie
+soll so bleiben). Administratoren von Linktrail (oder auch bereits
+Mitglieder der Redaktionsgruppe) werden über solche Abstimmungen
+informiert (Email).
+
+Diese Redkateure sehen zusätzlich zum Abstimmungsformular die aktuelle
+"Hochrechung" der Abstimmungsresultate (unabhängig von ihrem
+Experten-Status). Ihr Klick auf eine solche Abstimmung ist dabei
+entscheidend und führt zur sofortigen Ausführung der Aktion. Damit ist
+es der Redaktion möglich (vor allem, da die Resultate der Abstimmung nur
+der Redaktion bekannt sind), sich auch gegen den Willen der Community zu
+entscheiden, resp. eine hängende Abstimmung sofort auszuführen.
+
+Der Initiator einer Abstimmung kann diese auch wieder abbrechen.
+
+
+4) Aufwand / Verantwortung
+Die Realisation des Konzepts teilt sich auf folgende Team-Mitglieder auf
+und verursacht folgende Arbeitszeit (alles Schätzungen)
+
+ Templates:           Fabian/Philip 2 Stunden; es kann hauptsächlich auf
+                      bestehendes Material zugegriffen werden.
+ Programmier-Konzept: Philip / 5 Stunden.
+ Umsetzung:           Abhängig vom Programmierkonzept 
+
+
+philip.hofstetter@linktrail.com
+16.10.00
+ 
+-- 
+1) ltrTopExperts.txt

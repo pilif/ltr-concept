@@ -1,0 +1,146 @@
+ltrHpSlots (1.1)
+----------------
+
+1) Problemstellung
+Ist der Konzeptschrift "Homepage Update tool für die Redaktion" zu
+entnehmen.
+
+2) Technische Anforderungen
+Auf beliebigen Seiten müssen redaktionell betreute "Slots" eingefügt
+werden. Sind solche "Slots" vorhanden, sind in der jewiligen Kategorie
+keine Trails mehr zu sehen. In einer Kategorie können sich beliebig
+viele Slots befinden. Slots beinhalten eine Beschreibung, ein Bild und 2
+Links auf Trails. Slots sind beliebig repositionierbar und verschiebbar.
+
+3) Realisation
+Die Realisation erstreckt sich über mehrere Bereiche, die abgeklärt
+werden müssen:
+
+ 3.1) Positionierung
+Im System ist bereits eine Positionierungsroutine vorhanden, die sich
+aber als unflexibel oder sogar ungenügend erwiesen hat, da sie in
+"Randpositionen" eine mehr oder weniger zufällige Sortierung vornimmt:
+Bislang wurde die Position in Form einer Index-Nummer in der Datebank
+gespeichert. Bestanden 2 gleiche Nummern, so wurde nach Datum sortiert.
+Dies funktioniert wunderbar, wenn man von oben nach unten verschiebt,
+kann aber Probleme verursachen, wenn 2 Elemente mit der Index-Nummer 0
+existieren. Eine Andere Lösung ist es, JEDEM Element der jewiligen Menge
+eine Index-Nummer zuzuordnen und ALLE Elemente anzupassen, wenn sich
+eines verändert. Das ist im angestrebten hochperformanten
+Datenbank-Umfeld aber keine Lösung.
+
+Die Lösung besteht in der Verwendung des in der Informatik bekannten
+Konzepts der Verketteten Liste: Jedes Element bekommt ein weiteres Feld
+"Next", in dem die ID des Nachfolgers gespeichert wird. Damit sind pro
+Änderung zwischen 1 und 3 Datenbank-Anfragen erforderlich.
+
+Vorteile der Lösung:
+ *)Minimierung der Anzahl an notewendigen Datenbank-Anfragen
+ *)Erfüllung der Problemstellung.
+
+Nachteile
+ *) 1-3 statt einer UPDATE-Anfrage notwendig
+ *) Heikles Datenformat: Die korrekte Positionierung erfordert eine
+    korrekte Abfolge an ID/Next-Paaren. Es muss darauf geachtet werden,
+    fehlertolerante Funktionen zu schreiben.
+    
+ 3.2) Datenstruktur
+Hier spielt wieder der Kampf "Universalität" gegen Performance eine
+wichtige Rolle beim Aufbau der Datenstruktur. Der hier gewählte Weg
+erfüllt GENAU die Spezifikationen von 1-2 Links pro Slot, lässt sich
+aber in dieser Form nicht, oder nur unsauber, auf mehr Links pro Slot
+erweitern. Der Vorteil: Nur EINE neue Tabelle erforderlich:
+ 
+CREATE TABLE ltrSlots(
+	Slot_ID INT not null AUTO_INCREMENT,
+	Node_ID INT not null,
+	Trail_1_ID INT not nll,
+	Trail_1_Text VARCHAR(80) not null,
+	Trail_2_ID INT,
+	Trail_2_Text VARCHAR(80),
+	Description TEXT not null,
+	Position INT not null,
+	PRIMARY KEY (Slot_ID)
+);
+
+Die Felder im Einzelnen:
+
+Slot_ID:      Dies ist die eindeutige ID eines Slots
+Node_ID:      ist die ID eines Nodes, zu dem der Slot gehört
+Trail_1_ID:   die ID des ersten Trails im Slot
+Trail_1_Text: Der Text, der im Link auf den Trail erscheinen soll
+Trail_2_ID:   die ID des zweiten Trails im Slot
+Trail_2_Text: Der Text, der im Link auf den Trail erscheinen soll
+Description:  Die Beschreibung des Slots
+Position:     Die Position des Slots auf der Seite. Wird nach 3.1
+	      gefüllt
+
+Nicht in der Datenbank enthalten ist ein weiteres Datenfeld: Wird in
+/home/linktrail/slots/ eine Datei mit dem Namen <Slot_ID>.gif (oder jpg)
+gefunden, so wird diese als Bild in den Slot eingebunden.
+
+ 3.3) GUI-Struktur
+Es wird ein neues Benutzer-Recht eingeführt, dass zur Anzeige von
+Editier-Buttons neben jedem Slot/ in jeder Directory-Seite führt. Hat
+eine Kategorie im Directory keine Slots zugewiesen, werden vorhandene
+Trails und dieser erweiterte Button "Add slot" angezeigt. Sobald ein
+Slot vorhanden ist, unterbleibt die Anzeige von Trails.
+Da Slots ein redaktionelles Werkzeug sind, ist es vertretbar, dass der
+Slot-Editor keine Rücksicht auf eventuell noch vorhandene, zu
+verschiebende, Trails nimmt.
+Der Editiermodus eines Slots erlaubt das auswählen eines Trails über ein
+JavaScript-Popup-Fenster in dem sich eine minimale Fassung des
+Linktrail-Directories befindet. Über eine ListBox, vergleichbar der im
+Editierungsmodus eines Links, kann ein Slot verschoben werden. Ein
+File-Upload-Feld erlaubt das Hochlanden eines Bildes, während ein
+weiterer Button ein eventuell vorhandenes Bild löscht. Kein Upload
+bedeutet: Keine Änderung am Bild. Im Administrationsfenster befinden
+sich 2 Buttons: Löschen und Ändern. Ersterer löscht den Slot nach
+Sicherheitsabfrage, während letzerer die Änderungen übernimmt. Ein
+Textlink dient dem Verlassen des Fensters ohne Änderungen.
+
+ 3.4) File-Struktur 
+Es werden zwei neue Applikations-Dateien eingeführt: Eines zum Editieren
+von Slots, das andere, um die Bild-Dateien aus dem von aussen
+unerreichbaren Bild-Verzeichnis zu lesen und per HTTP auszugeben.
+
+Da das Hinzufügen eines Slots eine Editierung am Directory bedeutet,
+heisst das Editierungs-File 
+
+ /home/linktrail/html/diredit/editslots.php
+
+Es wird zwecks schöner URLS nach /<<pfad zum directory>>/Edit_Slots
+gemappt.
+
+Das Bild-Anzeige-File gehört in den Kontext des Anzeigens einer
+Directory-Seite. Es heisst daher:
+
+/home/linktrail/html/directory/slotimage.php
+
+Auch diese Datei bekommt Serverseitig einen "schöneren" Pfad:
+
+/imgs/slotimages/<<nr>>.(gif|jpg)
+
+Zusätzlich werden neue Templates unter
+/home/linktrail/templates/directory/edit entstehen, deren Zahl noch
+nicht feststeht.
+
+Ein neues Verzeichnis fasst die Bilder: /home/linktrail/slot-images/
+
+ 
+4) Schlussbetrachtung
+
+ 4.1) Konzeptionserfolg
+Die Problemstellung ist mit diesen Datenstrukturen 100% erfüllt. Das
+Konzept ist in sofern aber kein 100%iger Erfolg, da die
+Positionierungsfunktion mit einem Haken leben muss und da die
+Slot-Definition sehr eng gesehen wird, also beschränkt ist, auf die
+spezifizierten 1-2 Links pro Slot.
+
+ 4.2) Zeitaufwand
+Der Zeitaufwand zur Realisation aller in diesem Dokument genannter
+Punkte beläuft sich auf: 1.5 Tage für vollständige Implementierung der
+Slots und 0.5 Tage zur Korrektur der Link-Verschiebungsfunktion.
+
+philip.hofstetter@linktrail.com
+14. September 2000 / 15:06

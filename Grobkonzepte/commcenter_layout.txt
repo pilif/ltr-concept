@@ -1,0 +1,245 @@
+Commcenter_layout 1.0
+---------------------
+
+1) Problemstellung
+In [1] wurde auf Probleme mit der Kommunikation zwischen verschiedenen
+Usern kurz eingegangen. Dieses Konzept soll eine Lösung zu diesem
+Problem darstellen: Die Benutzer-Kommunikation in linktrail ist momentan
+ein Huhn-Ei-Problem: Viele Beutzer geben an, dass ihre Email-Adresse nur
+für Freunde zu sehen ist, erlauben aber Freundschaften (mit guten Recht)
+nur für Benutzer, die auch mit ihnen gesprochen haben, was damit
+schlussendlich darauf hinausläuft, dass nur Freundschaften entstehen
+können zwischen Usern, die sich bereits irgendwie kennnen.
+
+Es gilt nun, eine Lösung zu finden, die sowohl eine sichere
+Kommunikation zwischen 2 Benutzern von linktrail ermöglichen soll, aber
+dennoch wenig Lernaufwand mit sich bringt und die Privatsphäre der
+Benutzer im System zusätzlich noch wahrt.
+
+
+2) Analyse
+Aus der Problemstellung ergeben sich folgende Vorausseztungen:
+
+ *) Minimaler Lernaufwand: Das System soll für den Benutzer einfach
+    zu erlernen sein. Einer der Möglichkeiten, dieses Problem anzugehen,
+    ist es, die Kommunikation in den sicheren Grenzen von Linktrail
+    ablaufen zu lassen. Es sollten keine externe Programme für die
+    Kommunikation notwenig sein.
+ *) Privatsphäre: Ein Benutzer sollte seine ICQ-Nummer und seine
+    Email-Adresse nicht allen linktrail-Benutzern zeigen müssen, da er
+    sich vor Spam schützen will. Damit muss eine Abstraktionsebene
+    zwischen den beiden Kommunizierenden Usern geschaffen werden.
+ *) Kontextbezug: Mit einer Person will man zu 2 verschiendenen
+    Zeitpunkten in Kontakt treten: 1) um einen defekten Link oder einen
+    guten Trail zu melden (also innerhalb des Trail-Fensters), oder 2)
+    um ein allgemeines Kompliment zu machen (am besten von der Mypage des
+    Ziel-Users aus)
+
+
+3) Darstellung
+Dadurch ergibt sich folgendes Kommunikationskonzept: 
+
+Linktrail bietet in einem Trail-Fenster oder auf der Mypage eines
+Benutzers die Möglichkeit, eine Nachricht für den Erzeufger/Benutzer
+abzusetzen. Dazu muss man selbst registriert sein.
+
+Die Nachricht erscheint nach dem Absenden im sog. Kommunikatoinscenter
+des Enpfängers. Dieses kann er über ein neues Iwantto-Item im Directory
+("Iwantto - Read my messages (xx new)") erreicht werden. 
+
+In Tabellenform sind alle Nachrichten an den User aufgelistet. Er kann
+sie von dort aus lesen, beantworten und auch aus der Liste löschen. 
+
+Durch die Einführung eins Kommunikatoinscenters eröffnet sich
+gleichzeitig der Weg für eine neue Form der Benutzerführung und
+Kommunikation, die es erlaubt, viele momentan dezentrale Funktionen von
+linktrail unter einem Hut zu verbinden und damit die Grundlage für eine
+effizientere Benutzerführung zu schaffen. Im Folgenden sollen diese
+Nachrichten dargelegt werden:
+
+3.1) Nachrichten-Typen
+Innerhalb des hier beschriebenen Kommunikations-Centers werden
+verschiendene Nachrichten verwendet. Hier befindet sich eine Liste der
+20 anzutreffenden Messages an den Benutzer:
+
+01) Your trail has been deleted: Wird abgesetzt, wenn der Administrator
+    oder die Redaktion einen Trail wegen des Verstosses der
+    Nutzungsregeln aus dem System gelöscht hat.
+02) Your trail has been moved: Tritt auf, wenn ein Trail wegen der
+    Neuschaffung eines Directory-Nodes an eine neue Position verschoben
+    wurde. Auch diese Nachricht wird nur vom System versendet
+03) Your trail has been changed: Der System-Administrator oder die
+    Redkation hat eine Änderung am vorliegenden Trail vorgenommen
+04) Link added: Diese Nachricht hat einen normalen Benutzer als "Owner".
+    Sie wird versendet, wenn ein Link zu einem Trail (Subscribed oder
+    besessen) hinzugefügt wird.
+05) Link moved: Tritt auf, wenn ein link in einem Trail verschoben wird.
+06) Link changed: Änderung eines Links
+07) Link deleted: Ein link wurde gelöscht
+08) A friend suggests: Tritt auf, wenn einer die "Recommend this trail"
+    verwendet hat. Diese Nachricht ersetzt die momentane Darstellung der
+    Funktion.
+09) User talks: Dies ist der  eigentliche Grund zur Einführung dieses
+    Features: Es ist eine Kurznachricht von einem Benuzter an einen
+    anderen. Eine solche Nachricht kann sich auf einen Trail beziehen
+    (dann, wenn die "Contact Autor"-Funktion innerhalb eines Trails
+    verwendet wurde.
+10) User requests transaction: Diese Nachricht ist reserviert und wird
+    in Zukunft Verwendung finden, falls ein Nutzer eine Transaktion
+    erwartet, resp. wenn ein Benutzer einen Trail kaufen will.
+11) User requests friendship: Tritt auf, wenn ein Benutzer die
+    Freundschaft des Empfängers wünscht. Ersetzt damit die vorhandene
+    Friendship-Request-Funktion. Neu kann einem Request ein Text
+    mitgegeben werden, der optional angzeigt werden kann, bevor der
+    Request beantwortet werden muss.
+12) Friendship terminated: Wird versendet, wenn ein Benutzer die
+    Freundschaft zum Empfänger kündet.
+13) linktrail announcement: Beinhaltet announcements von linktrail.
+    Damit können z.B. neue Features bekannt gemacht werden. Dies könnte
+    die grundlegende Plattform zum Versenden von Newslettern im System
+    werden.
+14) Poll Started: Irgendwo, wo der Empfänger TopExperte ist, wurde eine
+    Abstimmung um eine Directory-Modifikation ausgerufen. Der Benutzer
+    bekommt damit die Möglichkeit, abzustimmen.
+15) Poll finished: Wird versendet, wenn eine Abstimmung in einer
+    Kategorie in der der Empfänger TE ist, zu Ende gegangen ist.
+16) linktrail has choosen your trail for a slot: Ein Trail des
+    Empfängers wurde von linktrail in einen Slot[2] (z.B. auf der
+    Homagepage) eingefügt
+17) linktrai has removed your trail from a slot: Das Gegenstück zu
+    obiger Nachricht.   
+18) You have been elected as a FE: linktrail hat den Empfänger zu einem
+    Featured Expert erwählt[3].
+19) linktrail revoked your status as an FE: Linktrail hat den FE-Status
+    eines Benutzers zurückgezogen.
+20) Report sent: Einige der Nachrichten oben werden in wählbaren
+    Zeitabständen an den Benutzer versendet. Report Sent tritt auf,
+    nachdem ein solcher Report versendet wurde und enthält nochmals den
+    Wortlaut der Nachricht zu Archivzwecken.
+    
+ 3.2) Klassifizierung
+Jede der 20 Systemnachrichten wird in mehreren Kategorien klassifiziert.
+Folgende Kategorien und Klassen finden Verwendung:
+
+  *) MessageType (MT): Definiert die Art der Nachricht:
+     -Request:     Die Nachricht ist ein Request, der vom User zwingend
+                   mit ja oder nein beantwortet werden muss
+     -Content:     Die Nachricht informiert über eine Änderung an
+      Notification Inhalten generell, meist aber auf Trails bezogen
+     -Message:     Eine generelle Nachricht ohne weitere funktionalität
+  
+  *) Message Initiator (MI): Definiert, von wem die Nachricht stammt
+     -System:      Die Nachricht wurde vom System versendet
+     -User:        Die Nachricht hat einen User, dessen Aktion die
+                   Nachricht generiert hat.
+		   
+  *) Message Urgency (MU): Definiert die Dringlichkeit der Nachricht:
+     -Store only:  Die Nachricht wird im Kommunikationscenter angezeigt.
+                   Es wird zu keiner Zeit versucht, die Nachricht direkt
+		   an einen Benutzer weiterzuleiten (Email oder ICQ)
+     -Report:      Eine Zusammenfassung aller Nachrichten mit MU=Report
+                   wird standardmässig einmal in der Woche
+		   standardmässig per Email an den Benutzer versendet.
+		   Hier bietet sich in den Preferencen die Möglicheit,
+		   Zeitraum und Kommunikationsmittel zu ändern.
+     -Urgent:      Die Nachricht wird sofort ungepuffert an den User
+                   weitergelteitet.
+     Sowohl Report, als auch Urgent werden beide dennoch im jeweiligen
+     Kommunikationscenter aufgelistet. Die direkte Kontaktierung des
+     Users ist nur ein zusätzliches Kommunikationsmittel
+     
+  *) Message Persistance (MP): Definiert, ob eine Nachricht nach einem
+     Absenden an den Benutzer aus dem Linktrail-System gelöscht werden
+     soll, oder nicht.
+  
+Damit ist jede der 20 Nachrichten folgendermassen klassifiziert worden:
+
+ MID | Type |  MI |  MU |  P  |
+ ----+------+-----+----+------+
+  1) |  CN  |  S  |  U  |  1  |
+  2) |  CN  |  S  |  U  |  1  |
+  3) |  CN  |  S  |  U  |  1  |
+  4) |  CN  |  U  |  R  |  0  |
+  5) |  CN  |  U  |  R  |  0  |
+  6) |  CN  |  U  |  R  |  0  |
+  7) |  CN  |  U  |  R  |  0  |
+  8) |  RQ  |  U  |  S  |  1  |
+  9) |  MS  |  U  |  S  |  1  |
+ 10) |  RQ  |  U  |  U  |  1  |
+ 11) |  RQ  |  U  |  S  |  1  |
+ 12) |  MS  |  U  |  S  |  1  |
+ 13) |  MS  |  S  |  R  |  0  |
+ 14) |  MS  |  S  |  S  |  0  |
+ 15) |  MS  |  S  | R/U |  1  |
+ 16) |  MS  |  S  |  R  |  1  |
+ 17) |  MS  |  S  |  R  |  1  |
+ 18) |  MS  |  S  |  R  |  1  |
+ 19) |  MS  |  S  |  R  |  1  |
+ 20) |  MS  |  S  |  S  |  1  |
+ 
+ 3.3) Darstellung beim Benutzer
+Diese grosse Komplxität muss beim Benutzer des Systemes auf ein Minimum
+reduziert werden. Das Benutzerinterface der Features ist damit sehr
+einfach ausgefallen: In den Preferences erscheinen zwei neue Funktionen:
+Die eine definiert, womit Messages der MU=Urgent versendet werden sollen
+(und natürlich, ob überhaput), und wann und womit Messages der MU=Report
+versendet werden sollen.
+
+Im Trail-Subscribe-Fenster werden die beiden Momentan vorhandenen
+Checkboxen durch ein Dropdown-Feld ersetzt, in dem schlicht die MU der
+von diesem Trail generierten Nachrichten definiert werden kann (S, R
+oder gar U).
+
+Auf Seite der Anzeige der Nachrichten sieht das ganze vergleichbar mit
+dem Layout der Trails auf der Mypage aus. Mit einem Klick auf eines der
+Elemente der Tabelle, die alle Nachrichten in Kurzform anzeigt, kann
+zusätzlich ein erweitertes Formular angezeigt werden, das dann ein
+Nachrichten-spezifisches Layout trägt (z.B. ein Antwort-Formular bei 9).
+
+MT=CN-Nachrichten werden nach Trail gruppiert angezeigt: In der
+Nachrichten-Tabelle erscheint nur jeweils ein Eintrag pro Trail, über
+den Nachrichten eingetroffen sind. Erst die Detail-Ansicht zeigt alle
+Nachrichten eines Trails.
+
+Friendship-Requests und Recommendations kann ein kleiner Text "mit auf
+den Weg" gegeben werden.
+
+
+4) Betrachtung
+Dieses neue Kommunikationskonzept wird die Philosophie von linktrail
+grundlegend verändern, resp. wird die Applikation endlich der Philosopie
+angleichen. Linktrail heisst Kommunikation und Kooperation. Dieses
+Kommunikationskonzept wird alle Kommunikations-Features von linktrail
+(Recommendations, Subscriptions und Friendships) unter einen Hut bringen
+und mit einer weiteren Ebene der Kommunikation garnieren (die
+User-Messages; MID=9).
+
+Der Entwicklungsaufwand, der in diesem Fall wegen der Umfangreichen
+Änderungen sehr hoch ausfallen wird, ist damit mehr als gerechtfertigt.
+
+
+5) Zeitplan/Verantwortung
+  
+  Templates:          Fabian/Philip 5 Stunden
+  Programmierkonzept: Philip: 8 stunden
+  Realisation:        Philip: Konzeptabhängig. Mehr als 30 Stunden
+    
+
+philip.hofstetter@linktrail.com
+16.10.00
+
+updated:
+philip.hofstetter@linktrail.com
+19.10.00
+Changes: 
+In 1.0 war kein internes Kommunikationssystem vorgesehen. Die
+Kommunikation lief volständig über vorhandene Kommunikationswege;
+linktrail bot nur einen Chiffre-Inserate-Artigen Puffer der Anonymität
+an. Dies wurde verworfen, da nicht gewährleistet werden kann, dass ein
+Nutzer tatsächlich eine Email-Adresse angibt, die er auch abruft. Damit
+würden viele Nachrichten ungelesen versanden.
+
+-- 
+1) userfeedback.txt
+2) ltrHpSlots.txt
+3) ltrTopExperts.txt

@@ -1,0 +1,127 @@
+ltrMultiTrails 1.0
+------------------
+
+1) Problemstellung
+Schon lange definiert und von den Betatestern zeitweilig gewünscht, war
+eine Funktion, jeden neu angeklickten Trail in einem neuen Fenster zu
+öffnen. 
+
+Im Einstellungs-Fenster ist diese Funktion ausschaltbar (Default ist
+ausgeschaltet; also jede Seite im gleichen Trail-Fenster)
+
+Dieses Dokument beschreibt die Implementierung dieser Funktion.
+
+
+2) Technische Anforderungen
+Mit dieser Umstellung gehen einige technische Restrukturierungen einher:
+
+ *) Bisher hat trail.php, das File, das für die Darstellung des Trails
+    zuständig ist, eine Session-Variable $mytrail eingeführt, die die
+    nodeinfo-Struktur[1] des anzuzeigenden Trails festgehalten hat. Jede
+    vom Trail aus aufgerufene Seite hat diese Variable dann verwendet.
+    Wäre es möglich gewesen, mehrere Trails gleichzeitig zu öffnen,
+    geöffnet werden, hätte jeder neue Trail diese Valiable global
+    überschrieben; also auch in den anderen Fenstern, so dass ein 
+    Link auf "Edit Permissions" z.B. die Permissions des falschen
+    Trails editierte. Damit muss also diese Session-Variable entfernt
+    werden
+ *) Im Zuge der obigen Erweiterung kann gleich das schon lange
+    versprochene Permission-Checking vor dem tatsächlichen Ausführen der
+    Aktion eingebaut werden; bislang wurden bei fehlenden Permissions
+    zwar die GUI-Elemente ausgeblendet, gehackte-HTTP-Requests hätten
+    die Änderungen aber dennoch durchgeführt.
+ *) Das JavaScript, das ein Fenster geöffnet hat, muss erweitert werden,
+    dass es mehrere Fenster öffnen kann
+ *) Erweiterung der Preferences-Architektur zur Einbindung des neuen
+    Einstallungspunktes.
+    
+    
+3) Lösungen
+
+ 3.1) Entfernen von $mytrail
+Der aktuelle Trail-Name wird in der neuen Implementierung als
+PATH_INFO-Part an die URL des jeweiligen Editierungs-Files angehängt. So
+Editiert folgender Link die Permissions des Pilif's Tour-Trails:
+
+/trailedit/editperms.php/Computers_and_Internet/Pilif%27s_Tour
+
+Damit bekommt editperms.php eine neue Aufgabe: Es muss den Pfadnamen
+extrahieren und davon die nodeinfo-Struktur neu aufbauen. Dies bedingt
+neu eine Datenbank-Abfrage mehr.
+
+Der Vorteil der Übergabe des Trails als PATH_INFO-Variable (anstatt über
+eine GET-Variable) liegt darin, dass die betreffenden Formulare nicht
+angepasst werden müssen (das Action-Tag der Formulare zeigt auf die 
+jewilige Date selbst und beinhaltet damit automatisch wieder die 
+Information über den Trail. Es müssen keine <input type="hidden">-Tags
+verwendet werden).
+
+ 3.2) Permission-Checking bei der Ausführung
+Beim Einlesen der nodeinfo-Struktur aus der PATH_INFO-Variable, wird die
+gewünschte Aktion unter Einbezugname von Benutzer-ID und Permissions auf
+Durchführbarkeit überprüft. Fehlen die Permissions, wird auf $PATH_INFO
+(also den Namen des Objekts (Trail)) redirected. Die Aktion bleibt
+wirkungslos.
+Wie bereits aufgezeigt, ist diese Überprüfung der Permissions redundant
+zu einer bereits auf GUI-Ebene vorgenommenen Prüfung. Da das
+HTTP-Protokoll aber sehr einfach aufgebaut ist und da einige Browser
+mehr erlauben, als es die bekannten Grössen tun, muss damit gerechnet
+werden, dass nur fehlende GUI-Elemente keinen hinreichenden Schutz
+bieten, zumal es durchaus möglich ist, dass zuviel GUI-Elemente
+angezeigt werden (einloggen in einem Trail als User A, der Owner des
+Trails ist, ausloggen im Hauptfenster, 2. Trail öffnen (in einem neuen
+Fenster), einlogen als User B. Der erste Trail wird dabei nicht neu
+geladen und alle Elemente bleiben angezeigt. Dies ist kein
+verhinderbarer Bug, da JavaScript keine Kontrolle über geöffnete
+Zusatz-Fenster bietet.
+Mittels der neuen Prüfroutine werden Änderungen nun korrekt abgefangen. 
+
+Das obige Beispiel ist nicht konstruiert, wenn man bedenkt, dass in
+einem unsicheren Umfeld (Internet-Café) durchaus ein "eingeloggtes"
+Trailfenster vergessen werden kann, auch wenn man sich im Hauptfenster
+ausloggt.
+ 
+ 3.3) Anpassung des JavaScript
+Bislang hatten alle Links, die das JavaScript-Fenster öffneten dasselbe
+Target (trail222). openIt, die JavaScript-Funktion, die das Fenster
+öffnete erstellte das Popup-Fenster ebenfalls mit dem Namen trail222. In
+der neuen Lösung mussten 
+ 
+  -alle Links, die in einem PopUp-Fenster geöffnet werden sollen
+   (traget=...)
+  -Die JavaScript-Funktion selbst
+
+angepasst werden. openIt wird neu der Name des zu erstellenden Fensters
+übergeben. Dem "target"-Attribut eines Links wird der gleiche Wert
+zugewisen. Der Wert selbst ist entweder wiederum trail222 (wenn nur ein
+Fenster geöffnet werden soll), oder trailxxxx, wobei xxxx eine
+4-stellige Zufallszahl ist.
+
+ 3.4) Einbindung in die Preferences-Struktur
+Die Preferences-Architektur wurde um ein weiteres Checkbox-Feld
+erweitert. Weiterhin dazu gekommen ist in ltrUserData ein neues
+Datenbankfeld. Wird ein Link auf ein JavaScript-Fenster erzeugt, wird
+ein Template-Element {TARGET} mit einem der oben Beschriebenen Werte
+gefüllt (nach einem Vergleich mit der globalen Session-Valiable
+$glob_userdata, die nach dem Einloggen mit den Preferences des jewiligen
+Benutzers gefüllt wird).
+
+4) Schlussbetrachtung
+Der Aufwand für die (bereits fertig gestellte) Lösung war wegen des
+Nebeneffekts von 3.1 höher, als von der Problemstellung impliziert.
+Dennoch ist das Konzeptziel mehr als zu 100% erfüllt, da im Zuge der
+Umstrukturierungen neue, seit langem gewünschte Features, wie das
+Permission-Checking hinzugekommen sind, und weil im Zuge von 3.1 eine
+potentiell nicht-back-button-sichere Arhitektur durch eine
+problemlosere ersetzt werden konnte.
+
+philip.hofstetter@linktrail.com
+25.09.00
+
+-- 
+Anmerkungen
+
+1) Die nodeinfo-Struktur ist ein assoziatives Array, das Informationen
+   über ein Directory-Node (also Kategorie oder Trail) zur Verfügung
+   stellt. Aus einer Nodeinfo-Struktur gewinnt man Daten wie Name,
+   Besitzer, Änderungs- /Hinzufüge-Datum und so weiter
