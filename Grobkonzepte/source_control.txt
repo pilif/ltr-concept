@@ -1,4 +1,4 @@
-$Id: source_control.txt,v 1.1 2000-11-07 12:32:48 pilif Exp $
+$Id: source_control.txt,v 1.2 2000-11-07 12:37:16 pilif Exp $
 Source control 1.0
 ------------------
 
@@ -6,17 +6,17 @@ Source control 1.0
 Die linktrail-Applikation und damit verbundene Konzepte haben einen
 gewissen Umfang erreicht, dessen Administration sich als immer
 schwieriger erweisen hat. Auch im Hinblick auf Teamarbeit und
-Datensicherheit, muss eine einfache, Leistungsfähige und sichere Mehtode
+Datensicherheit, muss eine einfache, leistungsfähige und sichere Mehtode
 gefunden werden, Quelltexte zu sichern.
 
 2) gängige Ansätze
-Mehtoden zur Sourcecode-Verwaltung sind einige verbreitet. Linktrail hat
-bislang die "im zweifelsfalle: schreie"-Methode mit der "sch** da muss
+Methoden zur Sourcecode-Verwaltung sind einige verbreitet. Linktrail hat
+bislang die "im Zweifelsfalle: schreie"-Methode mit der "sch** da muss
 ein Backup her... haben wir das?"-Methode kombiniert und erfolgreich
-angewendet. Als andere Lösungen bieten sich versionskontroll-Software
+angewendet. Als andere Lösungen bieten sich Versionskontroll-Programme
 an. Verbreitet sind hier Microsofts Visual SourceSave und CVS. Linktrail
 verwendet wegen der angeborenen Unix-Lastigkeit und wegen des Preises
-letzeres.
+Letzeres.
 
 3) Umsetzung
  3.1) Repository
@@ -24,7 +24,7 @@ Das CVS-Repository befindet sich auf troll.linktrail.work in
 /usr/local/repos. Zugang haben 3 User: pilif, fabian und linktrai; 
 alle 3 haben Write-Access. Lese-Zugang ist nicht vorhanden. Im 
 Repository befinden sich zwei Projekte, wobei die Erstellung eines
-dritten fest eingeplant ist: ltrkonzept für die technischen
+dritten fest eingeplant ist. ltrkonzept für die technischen
 Konzeptschriften und prototyp für die linktrail applikation.
 
 Später wird noch der Search-Server in das System eingegliedert.
@@ -66,8 +66,10 @@ Arbeitskopie jedes Entwicklers unter obiger Adresse zu erreichen ist.
 Die Home-Verzeichnisse der Benutzer werden per SMB exportiert, so dass
 ein Zugang von Windows aus möglich ist.
 
+
 4) Backup
 Das Repository wird einmal täglich auf Band gesichert.
+
 
 5) Betrachtung
 Die Einführung eines Versionskontrollsystemes ist der erste Schritt in
@@ -84,4 +86,4 @@ philip.hofstetter@linktrail.com
 
 -- 
 $Author: pilif $
-$Date: 2000-11-07 12:32:48 $
+$Date: 2000-11-07 12:37:16 $
