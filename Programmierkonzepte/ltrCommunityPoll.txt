@@ -1,4 +1,4 @@
-$Id: ltrCommunityPoll.txt,v 1.1 2000-11-11 19:11:10 pilif Exp $
+$Id: ltrCommunityPoll.txt,v 1.2 2000-11-13 21:22:25 pilif Exp $
 
 ltrCommunityPoll 1.0
 ----------------
@@ -69,11 +69,56 @@ Das System differneziert folgende Abstimmungstypen:
 Die GUI ist momentan noch nicht fertig gestellt.
 
 
-5) Betrachtung
+5) Applikationslogik
+Auch in diesem Fall empfihelt sich, wie schon bei [2], ein
+Objektorientierter Ansatz, zumal dieser es erlaubt, langfrisitg mit
+beliebig vielen Poll-Tpyen umzugehen.
+
+Eine Abstimmung wird damit durch ein Objekt ltrPoll repräsentiert. Ein
+solches Objekt bietet folgendes Interface nach Aussen (C++-Notation in
+Gebrauch)
+
+ ltrPoll::print_form($expert)
+ Zeigt die aktuelle Abstimmung an. Jedes Objekt kann seine eigene
+ Darstellungsart verwenden und sein Formular anzeigen. Wie in [2] dient
+ eine HTTP-Variable zur Identifikation einer Kommunikation mit einem
+ Message-Objekt (pollid). Die Methode ist berechtigt, die Ausgabe
+ Experten-spezifisch zu gestalten.
+ 
+ ltrPoll::print_results()
+ Ist ein User mit der Permission > "user" in einem directory mit
+ laufenden Polls, so kann über print_results() ein Überblick über die
+ laufende Abstimmung eingesehen werden.
+ 
+ ltrPoll::execute_action($result_id)
+ Die Aktion dieser Abstimmung wird ausgeführt. In einer ersten Phase
+ wird result_id entweder 0 oder 1 sein, um eine Ja/Nein-Abstimmung zu
+ repräsentieren (mehr ist momentan nicht nötig).
+ 
+ ltrPoll::self_destruct()
+ Diese Abstimmung zerstört sich und alle Stimmen. Diese Methode sollte
+ nur intern, als Abschluss von execute_action() aufgerufen werden.
+ 
+ ltrPoll::poll($result_id, $expert)
+ Die eigentliche Abstimmung. Die poll-Klasse "entscheidet" selbst, ob
+ ein neuer Eintrag in ltrVotes gemacht werden muss, oder ob ein
+ bestehender Experte seine Meinung geändert hat.
+ 
+Öffentliche Member-Variabeln sind:
+
+ ltrPoll::Poll_ID
+ Die Datenbank-Id des aktuellen Objekts
+ 
+ ltrPoll::Owner
+ Der Initiator des Polls. Dieser darf selbst nicht "nein" stimmen, kann
+ aber die Abstimmung per sofort abbrechen.
+ 
+
+6) Betrachtung
 Die etwas komplizierte Datenstruktur erlaubt eine detailierte Auswertung
 der Abstimmungen bei grösst möglicher Speichersparnis und grösst
 möglicher Flexibilität. Nach Fertigstellung der GUI kann das Konzept in
-kurzer Zeit in die Tat umgesetzt werden. Damit wird die aufgabenstellung
+kurzer Zeit in die Tat umgesetzt werden. Damit wird die Aufgabenstellung
 aus[1] zu 100% erfüllt.
 
 philip.hofstetter@linktrail.com
