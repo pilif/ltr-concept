@@ -1,0 +1,131 @@
+$Id: NewFeatures.txt,v 1.1 2000-12-09 14:32:53 pilif Exp $
+
+New Features 1.0
+----------------
+
+1) Einleitung
+Im Zuge der Intranet-Workshops sind einige Feature-Wünsche aufgetreten, 
+die teilweise auch für die Implementierung in der Web-Applikation Sinn
+machen. Dieses Dokument zeigt die Grundidee für diese Merkmale auf, so
+dass sie in späteren Konzeptschriften detailiert betrachtet werden
+können. Das Dokument dient lediglich als Grundlage für später folgende
+Diskussionen und ist in keiner Weise bindend.
+
+2) Features
+ 2.1) Add this page to a trail
+Vielfach wurde bemerkt, dass das Erstellen eines Trails entweder Arbeit
+bedeutet, oder aber nur auf "seichte" Links verweist, die bloss auf der
+Erinnerung des Benutzers basieren. Die Schritte zum Erstellen eines
+Trail gestalten sich nämlich folgendermassen:
+
+ *) Ein Benutzer will einen Trail machen und greift auf URLs
+   (Informationen) zu, die er bereits im Kopf hat. Dabei werden nur
+   oberflächliche Links erstellt.
+ *) Der Benutzer will einen Trail machen, sucht etliche Stunden nach
+    relevanten Links und füllt diese dann in den Trail ein.
+
+Beide Wege sind nicht gangbar: Der erste produziert "schlechte"
+Trails, der zweite wird von einem Durchschnittsbenutzer nicht freiwillig
+gegangen, da er Mehrarbeit bedeutet. Optimalerweise läuft die
+Erstellung eines Trails direkt aus einem Suchvorgang heraus:
+
+ *) Ein Benutzer beschäftigt sich mit einem Thema A und findet viele
+    Webseiten.
+ *) Jede Webseite wird evaluiert und für den Fall, dass Sie "gut" ist,
+    direkt in einen Trail eingefügt.
+    
+Damit wächst der Trail während des Suchvorgangangs. Ein solcher Weg ist
+aber momentan nur denkbar, wenn sich im Hintergrund immer noch die
+linktrail-Seite befindet. Dies kann aber von einem Benutzer nicht
+erwartet werden (zumal er nicht daran denken wird, VOR der Suche
+linktrail zu besuchen).
+
+Die Lösung dieses Problems liegt in der Einführung eines
+Browser-Buttons, der es erlaubt, analog zu den Favoriten/Bookmarks
+vorzugehen: Ein Benutzer klickt während des Surfens auf einer Seite auf
+den Browser-Button und bekommt dann folgende Optionen zu sehen:
+
+ *) Add this link to Trail xxxx (xxx ist der letzt-bearbeitete Trail)
+ *) Add this link to Trail: <yyyyy> (<yyyyy> ist eine DropDown-Box mit
+    allen Trails auf der Mypage zur Auswahl)
+ *) Add this link to a new Trail: Erlaubt es, einen neuen Trail zu
+    erstellen und mit dem Link zu füllen. Voraussetzung: Das schon lange
+    bestehende Problem zur Node-Auswahl in einem Trailfenster muss
+    gelöst werden.
+
+Dies erlaubt es, Trails mit einer stark erhöhten Einfachheit zu
+produzieren. Erst durch die Einführung dieses Features kann linktrail zu
+einem echten "Werkzeug" werden.
+
+ 2.2) Automatische Node-Auswahl
+Es zeigt sich immer mehr, dass sich Leute nicht mit dem Ablagepunkt
+eines Trails im Directory herumschlagen wollen. Häufig entsteht der
+Wunsch, bloss "schnell mal einen Trail" zu erstellen. Da ist die Auswahl
+eines Directory-Punktes mehr Zeitverbrauch denn Nutzen. Eine
+automatische Node-Auswahl würde sich in 2.1) als sehr nützlich erweisen:
+Ein Benutzer beginnt damit, seinen Trail zu erstellen, während das
+System selbstständig versucht, einen passenden Directory-Node zur Ablage
+zu finden. Dies kann durch Keyword-Matching in den einzelnen Feldern
+erreicht werden (dies ist Teil eines später zu erstellenden Konzepts).
+
+Visionär ist eine andere Darstellung des Sachverhalts: Die Zurodnung
+eines Trails zu einem directory-Punkt wird nur vorgenommen, wenn
+erforderlich; spricht wenn ein Benutzer die Trail-Bilbiothek über das
+Directory einsehen will. Dies erlaubt es, sich in Reichtung "Trails
+gehören einem User und sind seinen Interessen zugeordnet" zu bewegen.
+Dies erfordert aber eine weitere theoretische Konzeptschrift.
+
+ 2.3) Verlinken von Trails
+Es ist häufig der Fall, dass man sich von einem Trail zu einem anderen
+bewegen will, oder das man einen ähnlichen Trail gesehen hat, der
+thematisch nicht komplett zu einem anderen passt, der aber im Kontext
+durchaus interessant sein kann. Das hier angesprochene Feature erlaubt
+es, von einem Trail auf einen anderen zu verlinken. Anstatt auf eine
+"normale" Webseite kann ein Link auf einen Trail verweisen (wobei das
+schon jetzt funktioniert, aber offensichtlich noch niemand dran gedacht
+hat; sprich: eine bessere GUI (überhaupt eine) her muss). Eine andere
+Möglichkeit wäre es, einen weiteren grünen Kasten "Related trails"
+anzubieten, in der diese Liste dann aufgebaut würde.
+
+Die genaue Umsetzung ist Teil eines später folgenden Konzepts
+
+ 2.4) Related Trails
+Während 2.3 sich schon in diese Richtung bewegt, kann diese Feature auch
+automatisch arbeiten und auf Basis eines einmal ausgewählten Trails auf
+weitere Trails verweisen, die in URL, oder Keywords mit dem gewählten
+Trail übereinstimmen; selbstverständlich Directory-Übergreifend. Mit
+gewissen Marketing-Tricks kann dies als "einmalige Innovation auf Basis
+bekannter Effekte der Eiweissforschung" verkauft werden (auch wenn dann
+der Namen des Features geändert werden müsste...)
+
+Die technische Umsetzung wird in einem späteren Konzept folgen.
+
+
+3) Grundlegend Techniches
+Viele der hier dargelegten Features basieren auf einer Art der
+"Intelligenz" im System, die mit den momentan vorhandenen Mitteln
+nicht, oder nur sehr langsam umgesetzt werden kann. Für die Umsetzung
+fast aller der hier aufgelisteten Features werden häufig sog. "Keywords"
+gebraucht. Keywords sind gewisse Schlüsselbegriffe eines Trails, die ihn
+(möglichst) eindeutig zu charakterisieren vermögen; also eine Art
+"logischer Fingerbadruck" (ein physikalischer würde an sich nichts
+bringen, wäre aber auch wesentlich einfacher zu generieren). Keywords
+erlauben es, wenn geschickt gesucht/gefiltert, Trails zu
+charakterisieren und zwar auf Basis ihres Inhalts und nicht ihrer
+Ablage. Es gilt also, einen Algorithmus zu finden, der diesen
+"Fingerabdruck" erstellt. Dies wird Teil eines weiteren technischen 
+Konzepts sein, das als Basis für alle hier aufgelisteten
+Leistungsmerkmale dienen wird.
+
+4) Betrachtung
+Mit ein wenig Denkarbeit kann linktrail zu einem komplett neuen,
+intelligenten Dienst ausgearbeitet werden, ohne alte Vorteile zu
+verlieren, aber mit der Möglichkeit, einige Prozesse für den Benutzer
+klar zu vereinfachen. Linktrail nennt sich selbst ein
+Informations-Management-System. Mit den hier aufgelisteten Features kann
+es diesem Ruf gerecht werden. Damit (unter Voraussetzung, dass die
+Diskussion über die Features positiv verläuft) ist klar, dass der in 3)
+angesprochene Algorithmus entwickelt werden muss.
+
+philip.hofstetter@linktrail.com
+09.12.200

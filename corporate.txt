@@ -1,0 +1,201 @@
+$Id: corporate.txt,v 1.1 2000-12-09 14:32:53 pilif Exp $
+
+Corporate linktrail 0.5
+-----------------------
+
+1) Einleitung
+Nachdem eine sich die linktrail Webapplikation der Fertigstellung
+nähert, stellt sich die Frage nach weiteren Möglichkeiten der
+Vermarktung. Dabei wurde beschlossen, linktrail auch in Unternehmen als
+Intranet-Lösung zu verbreiten. Dieses Dokument erläutert einige Ideen
+und Konzepte, wie aus einer Webapplikation eine Intranet-Applikation
+erstellt werden kann. Das Dokument basiert auf einem Gespräch mit einem
+Mitarbeiter der Firma Ixos in München und zwei Intranet-Workshops des
+linktrail Teams mit meheren Mitarbeitern grösserer Firmen, darunter IBM
+und UBS.
+
+
+2) Bestandanalyse
+
+ 2.1) linktrail Heute
+Linktrail is eine Web-Applikation, die es erlaubt, kontextbezogen mehere
+Links (Webseiten) in einer übersichtlichen Form zusammenzufassen. Jedem
+link wird Kontextinformation in Form eines Titels, einer Beschreibung
+und einer Position relativ zu den anderen Links eines Trails zugeordnet.
+Ein Trail selbst hat einen Besitzer, Berechtigungen, einen Titel und
+eine Beschreibung. Damit erlaubt es linktrail
+
+ *) Suchergebnisse zwischenzuspeichern und für spätere Verwendung
+    bereitzustellen.
+ *) Informationen über Webseiten in übersichtlicher Form zu speichern
+    und anderen Personen bereitzustellen
+ *) Mit anderen Personen an einem bestimmten Thema in Form von
+    Internet-Links zusammenarbeiten.
+    
+Linktrail erlaubt es nicht,
+
+ *) Informationen zu speichern/aufzubereiten, die sich nicht auf fremde
+    URLs (Webseiten) beziehen, sondern sich auf andere Quellen beziehen
+ *) Informationen von der Stamm-Webseite (www.linktrail.com) getrennt zu
+    bearbeiten.
+ *) Informationen im System zu speichern. Ein Trail bietet nur 
+    Verknüpfungen zu externen Webseiten
+
+ 2.2) Abstraktion
+In der Zielsetzung diese Einschränkungen, die eine produktive Nutzung im
+Unternehmensumfeld unmöglich machen, soll nun versucht werden, das
+konzept eines Trails soweit zu abstrahieren, dass ein Konzept ohne
+Einschränkungen erarbeitet werden kann.
+
+Es werden folgende Definitionen gesetzt:
+
+Trail: Ein Trail ist eine Sammlung an Informationseinheiten zu
+       einem bestimmten Thema, angereichert durch Kontextinformationen.
+       Ein Trail vereint damit Informationseinheiten (IE) zu einer neuen
+       Information (Meta-Information)
+IE   : Eine Informationseinheit ist ein Teil eines Trails. Sie besteht
+       aus einem Verweis (V), einem Titel, einer Beschreibung und
+       einer Position.
+V    : Ein Verweis ist ein Verweis auf eine Resource (R). Verweise
+       können je nach Fähigkeit des Darstellungsclients (Browsers)
+       Resourcen direkt in die IE einbetten, oder auf diese verweisen.
+R    : Resourcen bilden die Informationskomponente einer IE. Sie stammen
+       von verschiedenen Quellen und können von verschiedenen Typen
+       sein: Webseiten (wie momentan in linktrail), untypisierte binäre
+       Daten (nicht speziell unterstützte Daten), Texte, Grafiken, aber
+       auch Dokumente aus bestehenden CMS/DMS. Resourcen haben einen
+       MIME-Type, der sie eindeutig identifiziert.
+
+Mit diesen Definitionen wird es möglich, aus einem Trail einen
+abstrakten Container mit verschiedenen Inhalten zu bilden, der
+verschiedene Informationseinheiten (z.B. Suchresultate) zu einer neuen
+Information vereint. 
+
+
+3) Das linktrail von morgen
+
+ 3.1) Ebenen der Dokumentenverwaltung
+Linktrail wird sich durch die momentane Ausrichtung in Unternehmen
+evbenfalls hautpsächlich der Gleiderung und Strukturierung von
+Informationen/Dokumeten widmen; wird also zu einer Art DMS/CMS, wobei
+dies ein sehr grosses Gebiet ist, das teilweise auch in Unternehmen
+bereits stakr vertreten ist; es gilt also eine Lücke zu finden, in denen
+sich ein System platzieren kann, ohne einem der "Grossen" auf die Füsse
+zu treten. Das ganze DMS lässt sich in folgende Ebenen unterteilen:
+
+ 1) Authoring: Eine Person erstellt ein Dokument und erstellt damit die
+    Grundlegende Information.
+ 2) CMS - Content Management (Systems): Das Erstellte Dokument / die
+    Grundinformation wird über ein CMS-System zur "Storage" vorbereitet
+    und dort abgelegt.
+ 3) Storage: Meist das Filesystem des Betriebssystems oder eine andere
+    Datenbank. Hier liegt das erstellte Dokument; vom System abhängig
+    angereichtert mit bereits beim Ablegen eingegebener
+    Meta-Information.
+ 4) Request: Bietet Informationen des Storage-Layers einem Benutzer an.
+    Dies kann ein einfacher Dateimanager, ein Knowledge Management
+    System, ein Index-Server oder eine protprietäre Web-basierte
+    Applikation sein.
+ 5) Reader: Der Benutzer, der schlussendlich die in 1 erstellte
+    Information wieder zu lesen bekommt.
+
+Jede dieser Ebenen greift jeweils nur auf ihren direkten Vorgänger zu.
+Alle sind in jedem Fall anzutreffen, sind nur jeweils anderweitig
+ausgebaut. Folgende aus dem Markt etabilierte Produkte haben sich
+folgendermassen in diesen Ebenen festgesetzt:
+
+ 1) entfällt (Menschen sind keine Produkte)
+ 2) Office-Programme (Lotus, Microsoft, Sun), aber auch dedizierte
+    Systeme wie das in der Schweiz beliebte Communiquée 2. Manchmal ist
+    in einer Art "Zwischenlayer" auch ein Versionskontroll-System
+    vorhanden (CVS as Beispiel)
+ 3) Häufig noch das Filesystem, oder aber Systeme aus 4), die auch
+    untere Ebenen abdecken können.Microsoft hat in diesem Bereich Pläne
+    für ein erweitertes Filesystem.
+ 4) Ein Webserver mit proprietärer Applikation, Microsoft
+    Index-Server, aber auch Systeme wie Lotus Notes und andere, die in
+    der Lage sind, auch weiter unten liegende Ebenen abzudecken (SAP als
+    Paradebeispiel eines Systems, das bislang NUR die unteren Ebenen
+    weitgehendst abgedeckt hat und nun mit mySAP auch diese Ebene
+    abdeckt.
+ 5) entfällt
+
+ 3.2) neue Ebene
+Da alle ebenen wie in 3.1 dargestellt bereits mehr oder weniger
+ausgefüllt sind, kann linktrail neben dem Konkurrenzieren eines der
+bestehenden Produkte (was bei Namen wie Lotus Notes oder gar SAP eher
+schwer fallen sollte), auch versuchen, eine neue Lücke zu finden. Die
+Applikation ist dazu (auch durch die Definitionen in 2) durchaus in der
+Lage:
+
+Zwischen 4) und 5) soll noch eine weiterer Layer eingerichtet werden:
+Eine Ebene der Gruppierung von Information und der
+Kooperation/Kommunikation: Linktrail kann dabei ohne grosse
+konzeptionelle Veränderungen (siehe Definitionen in 2) ein System
+anbieten, das druch Schnittstellen zur Ebene 4) (oder in rudimentärer
+Form auch tiefer; siehe dazu später) die Bedienung dieser Systeme
+vereinfachen kann, das aber auch durch sein Konzept einer Neubildung von
+Informationen dienen kann: Ein Programm aus Ebene 4) oder unterhalb
+liefert die Resourcen für Informationeinheiten, die dann wiederum in
+einem Trail gesammelt werden. Die kollaborativen Aspekte des Systems
+erlauben weitere Vereinfachungen des Suchens und Findens von
+Informationen in bestehenden Datenbanken.
+
+Durch seine Kommunikatoinsfreudigkeit ist linktrail in der Lage, auch
+verschiedene Systeme mit einander verschmelzen zu lassen: Mögliches
+Szenario: Ein Unternehmen hat einige Abteilungen bereits seit langer
+Zeit an ein SAP-System angeschlossen. Zusätzlich arbeiten andere
+Abteilungen in herkömmlicher, Filesystem-basierter Art und Weise.
+Linktrail kombiniert beide Systeme und erlaubt es, Trails zu machen, die
+sowohl die einen Dokumente, als auch die anderen enthalten. Angehörige
+einer dritten Abteilung können alleine mit ihrem Webbrowser ohne
+Kentniss der zugrunde liegenden Strukturen über Trails auf
+kontextbezogene Informationspakete zugreifen.
+
+ 3.3) Unternehmensbezogene Features
+Neben den oben angedeuteten Vorteilen bietet linktrail in seiner
+erweiterten Ausführung noch eine Reihe weiterer Möglichen Funktionen,
+die vor allem auf Wünschen basieren, die in den Intranet-Workshops des
+linktrail-Teams aufgetaucht sind:
+
+  3.3.1) Trail Templates
+Für Schulungen oder in bestimmten Projekten kann es nützlich sein,
+Trails zu erstellen, die NUR die Metainformationen beinhalten; aber noch
+keine Resourcen. Solche Trails wirken als eine art "Aufgabenstellung",
+die ann an einen Benutzer weitergegeben werden kann, der die passenden
+Resourcen findet und einfügt, oder selbst neu erstellt.
+
+  3.3.2) Zugriffsrechte
+Es wird möglich sein, einzelne Trails (oder deren IE) nur gewissen
+Anwenderkreisen zugänglich zu machen. Es wird damit möglich, einen
+projektbezogenen Trail für unterschiedliche Mitarbeiter aus
+unterschiedlichen Kreisen anders darzustellen, oder einzelne Trails als
+ganzes nur für bestimmte Personen zugänglich zu machen.
+
+  3.3.3) Integration in bestehende Benutzerdatenbanken
+Das linktrail-System integriert sich in bestehende Benutzerdatenbanken,
+so dass Berechtigungen/Benutzer in den gewohnten Administrationstools
+und, vor allem, nur einmal definieren lassen.
+
+  3.3.4) Ausgliederung von Trails
+Trails können als ganzes (mit einer Arbeitskopie der jeweilig
+angehängten Resourcen) exportiert und lokal weiterbearbeitet werden. Ein
+Browser-unabhängiges Tool kann diesen Part übernehmen (nativ, oder in
+Java geschrieben).
+
+
+4) Ausblick
+Eine linktrail-Applikation mit diesen Features wird sich in Zukunft in 
+Unternehmen beweisen müssen, ob sie auf genügend Resonanz trifft. Mit 
+diesem Dokument ist ein mögliches Einsatzgebiet abgedeckt, ohne aber
+auszuschliessen, das sich noch andere Gebiete finden werden. In [1]
+findet sich eine Zusammenfassung von weiteren neuen Features für die
+linktrail-Applikation, die im Zusammenhang mit den Workshops entstanden
+sind. Diese Leistungsmerkmale müssen/können aber bereits in die
+Webapplikation integriert werden.
+
+philip.hofstetter@linktrail.com
+09.12.00
+
+-- 
+ 1) NewFeatures.txt
