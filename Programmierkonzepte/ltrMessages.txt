@@ -1,40 +1,42 @@
-ltrMessages 1.0
+$Id: ltrMessages.txt,v 1.2 2000-11-06 18:43:10 pilif Exp $
+ltrMessages 1.1
 ---------------
 
 1) Problemstellung
-Linktrail soll ein Kommunikationssystem bekommen. Es sollte mit
-verschiedenen Nachrichten-Typen auskommen können, wovon einige per Email
-versendet werden, andere per ICQ und wieder andere gar nicht. Es ist mit
-einer exponentiellen Vermehrung von Nachrichten zu rechnen, die sich
+Linktrail soll ein Kommunikationssystem bekommen. Es ist mit einer 
+exponentiellen Vermehrung von Nachrichten zu rechnen, die sich
 alle minimal von einander unterscheiden, daher muss im Programmkonzept
 die einfache, modulare Erweiterung durch neue Messages gesichert werden.
-
-Eine genauere Problemstellung, nebst Definition der Funktionalität ist
-[1] zu entnehmen.
 
 Zusammengefasst wird dieses Dokument eine programmtechnische Lösung für
 folgende Anforderungen bieten:
 
   *) Make Friendship wird durch das neue Message-System realisiert
-  *) Subscribe this Trail-Notification wird über das Message-System
-     realisiert
   *) Recommend this trail ebenso
-  *) Das System unterstützt (momentan) 20 verschiedene Nachrichten, kann
-     aber jederzeit erweitert werden.
+  *) Das System ist einfach mit weiteren Nachrichten erweiterbar.
   *) Das System erlaubt die Anzeige beliebiger Layouts pro Nachricht
-  *) Das System kann Reports/ICQ-Nachrichten versenden.
 
 2) Realisierung
  2.1) Datenstruktur
 Eine Nachricht besteht grundsätzlich immer aus einem Nachrichten-Typen,
-einem Empfänger und einem Sender (System oder ein User), einem Datum, 
-an dem die Nachricht entstanden ist und einer Urgency (die aber nicht
-angezeigt wird). Zusätzlich hat jede Nachricht ein Flag, das definiert,
-ob sie gelesen wurde, oder nicht.
+einem Empfänger und einem Sender (System oder ein User) und einem Datum, 
+an dem die Nachricht entstanden ist. Zusätzlich hat jede Nachricht ein 
+Flag, das definiert, ob sie gelesen wurde, oder nicht.
 
-Der Rest einer Nachricht ist undefiniert und kann sich unterscheiden; es
-wird aber auch nicht nach diesen Informationen sortiert. Für die
-grösstmögliche Freiheit wird damit folgendes Datenmodell gewählt:
+Der Rest der Nachricht unterscheidet sich von Typ zu Typ. Als
+Speicherformat wird in der Datenbank für die Felder, nach denen nicht
+Sortiert werden muss der Datentyp "TEXT" verwendet, in den die
+serialisierte Form eines Arrays geschrieben wird.
+
+Gleichzeitig haben User-Messages (MT=9) ein weiteres Datenfeld: Einen
+Reference-Counter; dies zur Realisierung des "Sent"-Ordners: Wird eine
+Nachricht von einem Benutzer zu einem anderen versendet, so wird der
+Referenzzähler (ein Bitflag) auf "Bei Target und Sender vorhanden
+gesetzt. Löscht der eine oder andere User "seine" Nachricht, wird das
+Feld neu beschrieben. Hat keine mehr Interesse an der Message, wird sie
+gelöscht.
+
+Damit entsteht folgendes Datenmodell:
 
 CREATE TABLE 
  ltrMessages (
@@ -43,9 +45,9 @@ CREATE TABLE
    MessageType INT not null, 
    Sender VARCHAR (32) not null, 
    Date DATETIME not null, 
-   Urgency ENUM ('u','r','s') DEFAULT 's' not null, 
    Done ENUM ('y','n') not null, 
    Data TEXT not null , 
+   ReferenceCount INT null
    PRIMARY KEY (Message_ID)
  ) 
 
@@ -64,15 +66,42 @@ Message-Type-Feldes und anhand eines intern definierten Arrays, was für
 eine Factory-Funktion aufgerufen werden soll, und ruft diese danach auf.
 
 Die Factory-Funktion erstellt ein Objekt, das von ltrMessage
-abgeleitet ist, dessen beiden methoden print_simple und print_complex
+abgeleitet ist, dessen beiden methoden print_simple und print_extended
 überschreibt und eventuell durch weitere Methoden ergänzt.     
 
 Das erstellte Objekt wird in ein Array eingefügt, dass dann
 schlussendlich an den Aufrufer zurückgegeben wird.
 
 Der Layout-Code-Stack kann dann durch dieses Array iterieren und je nach
-Wunsch print_simple (für das Tabellen-Layout) oder print_complex (für
+Wunsch print_simple (für das Tabellen-Layout) oder print_extended (für
 die detailierte Ansicht) aufrufen.
+
+  2.2.3) Schnittstelle
+Zwischen der Seite, die das Message-Center darstellt (momentan eine
+stark erweiterte Version von edit_prefs.php), und dem jeweiligen
+Message-Objekt muss eine Schnitstelle aufgebaut werden, damit die
+Anzeige-Datei "merkt", ob der aktuelle Request für sie (z.B.
+Sortierreihenfolge der Nachrichten) oder für ein Message-Objekt gilt.
+Gleichzeitig muss die Anzeige-Seite "wissen", wie sie nach Bearbeitung
+eines Requests einer Nachricht weiter verfahren soll (reload, gar
+nichts,...). Folgendes Interface findet Verwendung:
+
+Parameter		Sinn
+objectid		Wenn gesetzt, wird der Aufruf (GET oder POST)
+                        als Request an ein Message-Objekt verstanden. Um
+			genau zu sein: an das Message-Objekt mit der
+			Message-ID, die im Parameter angegeben wurde.
+viewtype		Wenn 1, so wird die Anzeige-Seite sich selbst
+			nicht neu laden, wenn die Funktion
+			$obj->user_interraction() aufgerufen wurde. Wenn
+			0, so wird die aktuelle Seite darauf neu
+			geladen.
+
+Alle HTTP-Parameter werden bei jeglichen Aufrufen an das Message-Objekt
+in der Methode $obj->user_interaction() in Form einer Referenz
+übergeben. Das Objekt kann selst entscheiden, was es tun will, oder eben
+nicht. Gibt diese Methode einen String zurück, wird dieser als eine URL
+für einen Location-Header interpretiert.
 
   2.2.2) Betrachtung
 Diese Methode erlaubt es, eine weitere Nachricht in das System
@@ -94,17 +123,23 @@ Dieser Abschnitt verdeutlicht die jeweils notwendigen Änderungen:
 
   2.3.1) Friendship
 Friendship-Requests, deren Anzeige und deren Beantwortung laufen neu
-über das Message-System. Neben layout-Technischen Änderungen wird
-do_friendship.php obsolet. Freundschaften werden direkt von den
-jeweiligen Message-Objekten erzeugt (das Trennen läuft weiterhin über
-do_friendship.php). Message-Objekte können über ein noch zu
-definierendes Interface mit dem Rest des Programmcodes interragieren
-(resp. können selbst Formulare darstellen und Formulareingaben
-verarbeiten). Dieser Punkt wird zu einem späteren Zeitpunkt in dieses
-Dokument aufgenommen.
+über das Message-System. Freundschaften werden direkt von den
+jeweiligen Message-Objekten erzeugt, können aber weiterhin nach dem
+alten Muster geschlossen werden. Zusätzlich wird das IWANTTO-Feld auf
+der Mypage erweitert, so dass die Aktion des jewiligen
+"Freindship"-Items klarer wird. So wird je nach Kontext eine der
+folgenden IWANTTO-Texte angezeigt:
 
-Über die Message (MI=12) wird einem Benutzer neu mitgeteilt, wenn eine
-Freundschaft zu Bruch gegangen ist.
+ 1) Request a friendship with <<username>>
+ 2) Accept <<username>>'s request
+ 3) Cancel my friendship request to <<username>>
+ 4) Cancel my friendship with <<username>>
+
+Früher waren nur die Einträge 1 und 4 vorhhanden, die dann je nach
+Kontext 2, resp. 3 auslösten.
+
+Über die Message (MI=12) wird der Benutzer über den Fortgang des
+Friendship-Requests informiert.
 
 Damit wird in der Tabelle ltrFriends der Type (req/stab) unnötig, da ein
 Request über die ltrMessages-Tabelle abgewickelt wird. Ein Eintrag in
@@ -118,26 +153,16 @@ Request besteht, und wird danach der Request mit "Yes" beantwortet, ist
 der Trail doppelt subscribed. 
 
 Das jewilige Message-Objekt erkennt, ob eine Subscription besteht und
-setzt sich dann selbst ein Flag, dass es obsolet ist (um weitere
-Datenbank-Abfragen zu vermeiden; ist das Flag vorhanden, wird die
-Datenbank nicht mehr geprüft) und teilt das in den beiden Ansichten des
-Objekts dem User bereitwillig mit.
+entfernt sich bei Bedarf selbst.
 
-Die Lösung mit dem Flag bedeutet auch, dass eine Recommendation
-dauerhaft obsolet ist; auch, wenn der betreffende Trail noch vor dem
-Löschen der Nachricht wieder unsubscribed wurde. Das kommt aber insofern
-der Realität nahe, als dass ein Trail, den man unsubscriebed hat, den
-eigenen Erwartungen nicht standhielt und dass damit die Recommendation
-ohnehin sinnlos ist.
 
  2.4) Erweiterung bestehenden Codes
 Es muss eine einfache Funktion erstellt werden, die der automatischen
-Absetzung von Nachrichten dient. Bei jeder Änderung eines Trails muss
-neu eine Nachricht versendet werden, um die Klasse der MT=CN abzudecken.
-Ist ein Benutzer mit Permissions != user eingeloggt, muss in allen
-Editier-Bildschirmen eine Checkbox hinzugefügt werden, ob die Änderungen
-als "linktrail", oder als der User selbst vorgenommen werden (definiert
-den Owner und die Urgency der erstellten CN).
+Absetzung von Nachrichten dient. Ist ein Benutzer mit Permissions != user
+eingeloggt, muss in allen Editier-Bildschirmen eine Checkbox hinzugefügt
+werden, ob die Änderungen als "linktrail", oder als der User selbst 
+vorgenommen werden (in ersterem Fall wird eine Warnung an den Benutzer
+versendet).
 
 
 3) Betrachtung
@@ -147,12 +172,11 @@ Aufwand. Durch den fortgeschrittenen Zusatand des Prototypen zu diesem
 Zeitpunkt, müssen leider viele Funktionen neu programmiert werden, was
 den benötigten Zeitaufwand explodieren lässt (Implementierung und Test).
 Nichts desto trotz rechtfertigt sich dieser Aufwand, da viele Probleme
-aus [2] gelöst werden können und linktrail sich seiner Philosophie
+aus [1] gelöst werden können und linktrail sich seiner Philosophie
 (Co-working) weiter annähern kann.
 
 philip.hofstetter@linktrail.com
-22.10.00
+06.11.00
 
 -- 
-1) commcenter.txt
-2) userfeedback.txt
+1) userfeedback.txt
