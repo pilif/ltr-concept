@@ -1,4 +1,4 @@
-$Id: architecture.txt,v 1.1 2000-12-02 15:21:06 pilif Exp $
+$Id: architecture.txt,v 1.2 2000-12-02 16:00:38 pilif Exp $
 
 linktrail Architektur
 ---------------------
@@ -24,10 +24,10 @@ Linux 6.3 und 7.0 (6.3 auf dem Life-Server; 7.0 auf dem
 Entwicklungssserver). Letzteres wird auch auf den definitiven Servern in
 Frankfurt zum Einsatz kommen.
 
-Andere freie Unix-artige Betriebssysteme für die Intel Plattform sind
+Andere freie Unix-artige Betriebssysteme für die Intel-Plattform sind
 die BSD-Varianten und Sun Solaris, das allerdings nicht wirklich auf die
 Intel-Plattform optimiert wurde (und auf der Sparc-Plattform zum einen
-kostenpflichtig ist, und auf der anderen seite durch die Intel-fremde
+kostenpflichtig ist, und auf der anderen Seite durch die Intel-fremde
 Plattform erhöhte Hardwarekosten verursachen würde. Die Entscheidung zu
 Gunsten von Linux gegenüber BSD fiel aufgrund bereits vorhandener
 Erfahrug mit dem System.
@@ -53,7 +53,7 @@ Als Mailserver-Applikation findet Exim (http://www.exim.org) Einsatz.
 Die linktrail-Applikation ist aber nicht von dieser Software abhängig:
 Die verwendete Software muss einzig in der Lage sein, bei Empfang eines
 Emails an eine bestimmte Adresse, dieses an ein bestimmtes Programm
-weiterzugeben.
+weiterzugeben[1].
 
 Zum Versenden muss die Software in der Lage sein, den Envelope eines
 Mails verändern zu können (gilt für jedes Programm).
@@ -61,7 +61,7 @@ Mails verändern zu können (gilt für jedes Programm).
  2.4) Programmiersprache
 Als Programmiersprache kommt die serverseitige Scriptsprache PHP
 (http://www.php.net) zum Einsatz. Mit dieser Sprache (deren Interpreter
-sich in den Adressraum des Webservers einbinden lässt; der damit sehr
+sich in den Adressraum des Webservers einbinden lässt und damit sehr
 schnell ablaufen kann) wurde die Web-Applikation geschrieben. Die
 Suchmaschine wurde in der Hochsprache C++ geschrieben (siehe weiter
 unten).
@@ -77,7 +77,7 @@ Für die Webapplikation hätten sich noch folgende Sprachen angeboten:
     schnelleren Hardware immer hinfälliger
  *) Java/Java Servlets/Java Server Pages: Java ist eine
     beinahe-Hochsprache, die sich durch einen hohen Grad an
-    objektorientiertheit auszeichnet. Durch den plattformunabhängigen
+    Objektorientiertheit auszeichnet. Durch den plattformunabhängigen
     Ansatz ist aber auch Java eine interpretierte Sprache, mit dem
     Unterschied, dass der Interpreter in diesem Fall durch den enorm
     grossen Sprachumfang sehr langsam und Hardware-hungrig ist. Für eine
@@ -86,7 +86,7 @@ Für die Webapplikation hätten sich noch folgende Sprachen angeboten:
  *) ASP, ColdFusion: Beides sind proprietäre, mit PHP vergleichbare
     Scriptsprachen (ASP ist nur ein Framework für verschiedene Sprache),
     die zum einen von einem einzelnen Hersteller abhängig sind, die
-    nicht sntandardisiert sind und die hauptsächlich unter Windows ihren
+    nicht standardisiert sind und die hauptsächlich unter Windows ihren
     Dienst tun. ColdFusion ist dabei sehr kostenaufwändig.
  
 Unter den Scriptsprachen hat sich PHP vor allem duch seine Verwendung in
@@ -94,7 +94,7 @@ anderen, sehr dynamischen Applikationen hervorgetan, die 100'000e von
 Zugriffen pro Sekunde zu verzeichnen haben, die aber dennoch schnell und
 stabil laufen (Redhat.com, sourceforge.net, freshmeat.net). Dazu kommt,
 dass PHP als Web-Skriptsprache entwickelt wurde und damit den für diese
-Anwendung notwenigen Befehlsatz anbietet.
+Anwendung notwendigen Befehlsatz anbietet.
 
 Mit PHP wird auch Datenbankunabhängigkeit (siehe unten) gewährleistet:
 PHP bietet von sich aus native Schnittstellen zu allen führenden
@@ -131,14 +131,14 @@ für eine solche Datenbank vorhanden sind.
 3) Die Applikation
  3.1) Grundsätzliche Überlegungen
 Wenn eine Webapplikation entwickelt wird, so ist es nötig, gewisse
-grundsätzlichen Überlegungen anzustellen, wie sie z.B. bei herkömmlichen
+grundsätzliche Überlegungen anzustellen, wie sie z.B. bei herkömmlichen
 Anwendungen nicht immer erforderlich sind. linktrail App. wurde unter
 folgenden Gesichtspunkten konzipiert:
 
  *) Datenmodell: Das Datenmodell muss so einfach wie möglich sein und
     darf keine proprietären Erweiterungen von bestimmten Datenbank-Typen
     verwenden, da dies eine Portierung auf ein anderes Produkt
-    erschweren Würde.
+    erschweren würde.
  *) Geschwindigkeit: Die Applikation muss so schnell wie möglich laufen.
     Ein wartender User ist ein unzufriedener User ist ein User, der nie
     mehr wiederkommt.
@@ -152,8 +152,8 @@ folgenden Gesichtspunkten konzipiert:
     Veränderungen unterworfen, als eine "normale" Anwendung. Damit
     sollte sie einfach modifizierbar sein; sowohl betreffend des
     Backends (Datenbank-Wechsel...), als auch des Frontends (Layout; ist
-    auch von nicht-programmierern anpassbar).
- *) Multilingualität: Linktrail wird in verscheienden Sprachen angeboten
+    auch von Nicht Programmierern anpassbar).
+ *) Multilingualität: Linktrail wird in verschienden Sprachen angeboten
     werden. Beim Design wurde schon frühzeitig auf diesem Umstand
     geachtet, so dass eine Übersetzung keine Veränderung an der
     Applikation mit sich bringen wird.
@@ -197,18 +197,18 @@ Seiten des Systems) 0.2 Sekunden (gut die Hälfte der Zeit wartet die
 Applikation auf die Rückgabe von Daten der Datenbank, die sich im
 gleichen Netz-Segment wie der Büro-interne Fileserver befindet. Hier
 bremst also zusätzlich das langsame Netzwerk). Die neue Datenbank wird 
-durch Einführung gewisser erweiterten SQL-Features (UNIONs anstelle von
+durch Einführung gewisser erweiterter SQL-Features (UNIONs anstelle von
 temporären Tabellen) die Geschwindigkeit weiter erhöhen.
 
  3.4) Freundlichkeit 
 Wird erreicht durch absolute Einhaltung von Standards: Am Backend kommen
-nur bekannte Protokolle (wie SMTP und alle anderen Mail-Relevanten
+nur bekannte Protokolle (wie SMTP und alle anderen Mail-relevanten
 Protokolle) und Sprachen (wie SQL) zum Einsatz. Proprietäre 
 Erweiterungen werden so weit wie möglich nicht verwendet (Ausnahmen 
 bestätigen hier die Regel: Wenn ein proprietäres Feature grosse 
 Geschwindigkeitsvorteile bringen kann, so wird es angewendet. Dies 
 trifft aber nur sehr selten zu, so dass sich der grössere 
-Portierungsaufwand immer lohnt. Beispiel: LIMIT, um die Zurückgegebene
+Portierungsaufwand immer lohnt. Beispiel: LIMIT, um die zurückgegebene
 Datenmenge schon bei der Abfrage zu reduzieren -> entlastet das
 Netzwerk).
 
@@ -222,7 +222,7 @@ nicht: Kein Leistungsmerkmal von linktrail funktioniert nicht, wenn
 JavaScript ausgeschaltet ist (ausser das Verschieben von Links innerhalb
 eines Trails, das JavaScript zwingend erfordert).
 
-Im Frontend stand Benutzerbarkeit immer vor Aussehen: Während eine gut
+Im Frontend stand Benutzbarkeit immer vor Aussehen: Während eine gut
 aussehende, aber unbenutzbare Webseite zwar auf den ersten Blick
 anziehend wirkt, kann sie in der Zukunft Unbill erzeugen. Linktrail hat
 damit bewusst auf unnötigen Schmuck verzichtet, um eine gut aussehende,
@@ -233,12 +233,12 @@ Die Applikation ist in mehreren Schichten aufgebaut, die alle unabhängig
 von einander funktionieren (von unten nach oben; resp. von hinten nach
 vorne ("backend to frontend"):
 
-  *) Datanbank-API: Ist wiederum aufgeteilt drei Schichten:
+  *) Datanbank-API: Ist wiederum aufgeteilt in drei Schichten:
      °) Datenbank-Abstraktion: Beinhaltet den eigentlichen Code für den
         Zugriff auf das jeweilige Datenbank-System. Hier wird auf eine
 	externe Bibliothek (http://phplib.netuse.de) zugegriffen
      °) SQL-Statements: Beinhaltet die zur jeweiligen Datenbank/Struktur
-        passenden SQL-Statements; also vorbereitete Abfragen-Tempaltes
+        passenden SQL-Statements; also vorbereitete Abfragen-Templates
 	zur Abfrage der Datenbank.
      °) Storage-API: Bietet der Applikation einen Befehlssatz zum
         Zugriff auf die Datenbnank an. Hier findet die Abstraktion
@@ -246,14 +246,14 @@ vorne ("backend to frontend"):
 	die Umsetzung von Trail-Pfaden zu ihrer ID). Mit dieser API kann
 	der Datenbestand modifiziert werden. Sie ist aufgeteilt nach
 	Zweck und komplett prozedural gehalten.  
-     Im Falle einem Wechsel der Datenstruktur unter beibehaltung der
+     Im Falle eines Wechsels der Datenstruktur unter Beibehaltung der
      Datenbank-Software muss häufig nur der SQL-Layer angepasst werden.
      Bei tieferen Eingriffen könnte auch der API-Layer betroffen sein.
      
      Ein Wechsel der Datenbank, wie er momentan stattfindet, wird
      Eingriffe in allen 3 Ebenen zur Folge haben.
      
-  *) Applikaitons-Ebene: Dies ist die ganze Applikatinoslogik. Hier
+  *) Applikations-Ebene: Dies ist die ganze Applikatinoslogik. Hier
      werden Benutzer-Eingaben ausgewertet. Hier findet die eigentliche
      Applikation statt. Änderungen hier sind nur erforderlich, wenn
      ein Feature hinzugefügt, oder entfernt/verändert werden soll (und
@@ -261,14 +261,14 @@ vorne ("backend to frontend"):
      ist eine andere Ebene Zuständig). Diese Ebene ist teilweise
      objektorientiert und teilweise prozedural gestaltet. Eine
      Umstellung auf Objektorientiertheit wird dort durchgeführt, wo sie
-     Sinn macht. Siehe dazu [1]. Hierzu gehört auch der in einer anderen
+     Sinn macht. Siehe dazu [2]. Hierzu gehört auch der in einer anderen
      Programmiersprache (C++) geschriebene Search-Server, auf den die
      linktrail-Applikation per TCP/IP-Sockets zugreift.
    
   *) Layout-Ebene: Die Layout-Ebene dient zur Darstellung dessen, was
      sich in der Applikations-Ebene abspielt. Sie ist aufgeteilt in zwei
      Sub-Ebenen:
-     °) Layout-API: Beinhaltet funktionen, die von den Objekten der
+     °) Layout-API: Beinhaltet Funktionen, die von den Objekten der
         Applikations-Ebene aufgerufen werden.
      °) Templates: Beinhalten die Ausgabe, die das Programm machen soll.
         Momentan beinhalten die Templates alle HTML-Code, angereichtert
@@ -279,18 +279,18 @@ vorne ("backend to frontend"):
 Durch diese Strukturierung ist es möglich, dass mehrere Leute paralell
 an der Applikation arbeiten. Jeder Mitarbeiter kann auf einer bestimmten
 Ebene beginnen. HTML-Programmierer können über das Template-Konzept
-änderungen am Design der Seite vornehmen, ohne sich mit der darunter
-liegenden Applikationsprogrammierung auseinandersezten zu müssen
+Änderungen am Design der Seite vornehmen, ohne sich mit der darunter
+liegenden Applikationsprogrammierung auseinandersetzen zu müssen
 (vergleichbar mit dem Taglib-Konzept von JSP).
 
  3.6) Multilingualität
 Die Multilingualität ist in die Layout-Ebene von oben eingegliedert.
 Eine andere Sprache ist nach obigem Konzept nichts anderes als eine
 andere Art der Ausgabe. Damit ist eine Übersetzung nicht mit mehr
-Aufwand verbunden, als z.B., die ganzen Daten per WML auszugeben (mit
-dem Unterschied, dass neue Programmierarbeit nicht nötig ist; das Layout
-ist ja vorgegeben). Das Datenmodell selbst ist auf bis zu 64
-verschiedene Sprachen ausgelegt	[2].
+Aufwand verbunden, als z.B. die Aufgabe, die ganzen Daten per WML 
+auszugeben (mit dem Unterschied, dass neue Programmierarbeit nicht 
+nötig ist; das Layout ist ja vorgegeben). Das Datenmodell selbst 
+ist auf bis zu 64 verschiedene Sprachen ausgelegt[3].
 
  3.7) Paralellität
 Da die Applikation für die Speicherung aller externer Daten auf eine
@@ -305,7 +305,7 @@ einzelne Elemente aus den Caches zu löschen vermag.
 Die linktrail-Applikation ist darauf vorbereitet, an verschienden
 Stellen in verschiedenen Ungebungen eingesetzt zu werden. Auch für die
 Verbesserung in einem mehrköpfigen Programmierteam ist sie vorbereitet
-(zumal hier noch eine Source-Controlling-Software mithilft[3]).
+(zumal hier noch eine Source-Controlling-Software mithilft[4]).
 
 Damit steht auch einer späteren Anpassung oder Erweiterung der
 Applikation nichts im Weg.
@@ -317,10 +317,12 @@ philip.hofstetter@linktrail.com
 -- 
 Literatur:
 
- [1]: "PHP and OOP" aus "Web Application Development with PHP 4.0" von
+ [1]: ltrMailBounce.txt; Eine Konzeptschrift von Philip Hofstetter über
+      das Kennzeichnen von ungültigen Email-Adressen in der Datenbank.
+ [2]: "PHP and OOP" aus "Web Application Development with PHP 4.0" von
       Tobias Ratschiller und Till Gerken (ISBN: 0-7357-0997-1); Seite 41
- [2]: ltrLanguages.txt; eine Konzeptschrift von Philip Hofstetter für
+ [3]: ltrLanguages.txt; eine Konzeptschrift von Philip Hofstetter für
       die linktrail-Applikation. Enthält das Datenmodell für die
       Aufteilung des Directories.
- [3]: source_control.txt; Eine Konzeptschrift von Philip Hofstetter für
+ [4]: source_control.txt; Eine Konzeptschrift von Philip Hofstetter für
       die linktrail-Applikation
