@@ -1,4 +1,4 @@
-$Id: ltrMessages.txt,v 1.3 2000-11-06 19:47:27 pilif Exp $
+$Id: ltrMessages.txt,v 1.4 2000-11-11 19:13:16 pilif Exp $
 ltrMessages 1.1
 ---------------
 
@@ -156,14 +156,9 @@ Das jewilige Message-Objekt erkennt, ob eine Subscription besteht und
 degradiert sich selbst zu einer normalen Nachricht "billbob recommended
 you to subscribe xxx, but you have already subscribed it yourself"
 
-
- 2.4) Erweiterung bestehenden Codes
-Es muss eine einfache Funktion erstellt werden, die der automatischen
-Absetzung von Nachrichten dient. Ist ein Benutzer mit Permissions != user
-eingeloggt, muss in allen Editier-Bildschirmen eine Checkbox hinzugefügt
-werden, ob die Änderungen als "linktrail", oder als der User selbst 
-vorgenommen werden (in ersterem Fall wird eine Warnung an den Benutzer
-versendet).
+Nach Erstellen einer Recommendation, wird eine Spezielle Nachricht in
+die Outbox eines Benutzers gelegt, die alle Benutzer, an die die
+Recommendation gegangen ist, erneut auflistet.
 
 
 3) Betrachtung
@@ -177,7 +172,7 @@ aus [1] gelöst werden können und linktrail sich seiner Philosophie
 (Co-working) weiter annähern kann.
 
 philip.hofstetter@linktrail.com
-06.11.00
+11.11.00
 
 -- 
 1) userfeedback.txt
