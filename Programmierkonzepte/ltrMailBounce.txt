@@ -1,0 +1,100 @@
+$Id: ltrMailBounce.txt,v 1.1 2000-11-20 21:17:38 pilif Exp $
+
+ltrMailBounce 1.0
+-----------------
+
+1) Problemstellung 
+In absehbarer Zeit wird die linktrail-Applikation an externe Benutzer
+Emails versenden. Wie bekannt ist, werden etwa 80% der von den Benutzern
+eingegebenen Email-Adressen ungültig sein. Damit die Bandbreite nicht
+mit solchen Mails (und Antworten auf diese, die die Ungültigkeit
+nochmals hervorheben) verschwendet wird, muss ein Konzept aufgebaut 
+werden, das es erlaubt, auf retournierte Emails reagieren zu können und
+eine weitere Versendung von Nachrichten zu unterbinden. Dies sollte
+angesichts der angepeilten Benutzerzahlen automatisch geschehen.
+Zusätzlich sollte der Benutzer informiert werden, dass er keine Emails
+mehr bekommt (vielleicht war auch nur der Mailserver eines ehrlichen
+Benutzers gerade zum Zeitpunkt der Versendung des Reports nicht
+erreichbar)
+
+
+2) Mögliches Vorgehen
+Um die Problemstellung zu erfüllen, wird in der
+linktrail-Mailserver-Konfiguration (es wird dabei Exim[1] verwendet)
+folgendermassen vorgegangen:
+
+ *) Ein Mail wird mit einem Envelope-From in der Form webreply-<base64
+    der empfänderadresse> versendet. Der Form Header selbst wird nicht
+    angetastet.
+ *) Bounced das Mail, wird vom Mail-Server der Gegenseite das
+    Envelope-From verwendet, um das Mail zu retournieren
+ *) Ein Exim-Router schreibt jedes Eintreffende Mail, auf dessen
+    Envelope-To oder Header-To der Regexp
+    ^webreply-(.*)@linktrail.com$ matct, auf $1@linktrail.work um
+ *) Alle Mail an linktrail.work wird an ein PHP-Script weitergeleitet,
+    as als Shell-Script ausgeführt wird. Es verbindet sich mit der
+    Datenbank und setzt in ltrUserData ein entsprechendes Flag und
+    sendet noch eine Warnmeldung an dieselbe Email-Adresse (per Cron-Job
+    zeitverzögert einmal alle 2 Tage). Alternativ wäre auch die
+    Versendung einer LMS-Nachricht denkbar.
+
+Im Folgenden sollen nun diese Schritte im Einzelnen betrachtet werden:
+
+3) Detailbetrachtung
+ 3.1) Envelope-From
+Der Envelope eines Mails ist eine Anforderung an die Mailserver, die das
+Mail passiert, wie vorzugehen ist. Ein Mail-Client nimmt den Envelope
+nicht war, während ein Mail-Server den Header ignoriert. Dieses
+Verfahren wird in diesem Fall genutzt, dass ein Benutzer auf ein
+Notification-Mail Antwort geben kann. Dieses Mail geht dann an die im
+Header angegebene From-Adresse.
+Gibt auf der anderen Seite ein Mail-Server Antwort (User unknown, ...),
+so wird dieser den From-Header nicht beachten, sondern wird den
+präparierten Envelope-From-Header verwenden, der auf das PHP-Script auf
+der Seite von linktrail zeigt.
+
+ 3.2) Rewriting
+Da der intern verwendete Exchange-Server keine Schnittstellen für
+externe Programme bietet und da der Exim-Server wiederum alle Mail an
+@linktrail.com an den Exchange-Server leitet und da ein externes
+Programm im linktrail-Firmennetz eine Sicherheitslücke wäre, muss ein
+Workaround gefunden werden, der zwar *@linktrail.com an den
+Exhange-Server weiterleitet, aber eben nicht mails, die an einen dieser
+modifizierten Envelope-Header gesendet wurden. Als Lösung bietet sich
+hier das Rewriting von Adressen an, das bei Exim mittels Regexp
+besonders flexibel gelöst ist: Passende Adressen werden an
+@linktrail.work umgeschieben; eine interne, nicht weiter wichitge
+Domain, die nur der Identifikation der Bounce-Mails dient.
+
+ 3.3) PHP-Programmierung
+Am Ende der Kette wartet ein PHP-Script, das die modifizierte Adresse
+übergeben bekommt, die ursprüngliche Adresse extrahiert (base64-decode)
+und in der Tabelle ltrUserData den jeweligen Datensatz mit einem Flag
+versieht, das zum einen den benutzer auf die falsche Adresse aufmerksam
+macht und zum anderen eine weitere Versendung von Emails an diese
+Adresse unterbindet. Als Sprache für dieses Script wurde PHP gewählt,
+das in diesem Fall als Stand-Alone-Executable ausgeführt wird, um den
+Overhead des Webservers zu übergehen.
+
+
+4) Betrachtung
+Mit dieser Funktionalität wird keine wertvolle Bandbreite für
+retournierte Emails versendet. Damit kann linktrail ohne Probleme auch
+in kurzen Abständen Emails versenden. Selbstverständlich kann ein
+gewitzter Benutzer das System aushebeln: Er ändert einfach immer vor dem
+Versenden des Reports seine Email-Adresse in den Preferences auf eine
+neue ungültige. Andererseits lohnt sich dieser Aufwand keineswegs, zumal
+er, um linktrail wirklich zu schaden, von tausenden von Benutzern
+gleichzeitig übernommen werden müsste. Und auch dann: Es ist für
+linktrail ein leichtes, das Versenden von Nachrichten für einen
+beliebigen Zeitraum zu unterbinden.
+
+Mit diesem System steht der Implementierung des Versendens von
+Nachrichten in der linktrail-Applikation nichts mehr im Wege.
+
+
+philip.hofstetter@linktrail.com
+20.11.00
+
+-- 
+1) http://www.exim.org
